@@ -14,8 +14,10 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+
+    // final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           //Fondo azul con logo y nombre de la app
@@ -23,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
             top: 0,
             left: 0,
             right: 0,
-            height: 230,
+            height: 215,
             child: Container(
               color: Colors.blue,
               padding: const EdgeInsets.all(20.0),
@@ -47,53 +49,52 @@ class _RegisterPageState extends State<RegisterPage> {
             bottom: 0,
             left: 0,
             right: 0,
-            top: 200,
-            child: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(50, 45, 50, screenHeight * 0.30),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30.0),
-                    topRight: Radius.circular(30.0),
+            top: 140,
+            child: Container(
+              margin: const EdgeInsets.only(top: 50),
+              padding: EdgeInsets.fromLTRB(50, 45, 50, screenHeight * 0.10),
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    spreadRadius: 5,
+                    blurRadius: 15,
+                    offset: Offset(8, 8),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Registrarse',
-                      style: TextStyle(
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                          shadows: [
-                            Shadow(offset: Offset(1.0, 1.2), color: Colors.grey)
-                          ]),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    LabelInput(label: 'User Name', input: createUserName()),
-                    LabelInput(label: 'Email', input: createEmail()),
-                    LabelInput(label: 'Password', input: createPasword()),
-                    const SizedBox(height: 40),
-                    createRedirection(
-                        text: '¿Ya tienes una cuenta?',
-                        textLink: 'Inicia sesión aquí'),
-                    const SizedBox(height: 40),
-                    createButtonRegister()
-                  ],
+                ],
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                  topRight: Radius.circular(30.0),
                 ),
               ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Registrarse',
+                    style: TextStyle(
+                        fontSize: 35.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue,
+                        shadows: [
+                          Shadow(offset: Offset(1.0, 1.2), color: Colors.grey)
+                        ]),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  LabelInput(label: 'User Name', input: createUserName()),
+                  LabelInput(label: 'Email', input: createEmail()),
+                  LabelInput(label: 'Password', input: createPasword()),
+                  const SizedBox(height: 40),
+                  createRedirection(
+                      text: '¿Ya tienes una cuenta?',
+                      textLink: 'Inicia sesión aquí'),
+                  const SizedBox(height: 40),
+                  createButtonRegister()
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
