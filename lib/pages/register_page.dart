@@ -38,7 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
               view: true,
               screenHeight: screenHeight,
               textContainer: 'Registrarse',
-              labelUsername: 'User Name',
+              labelUsername: 'Usuario',
             ),
           ),
         ],

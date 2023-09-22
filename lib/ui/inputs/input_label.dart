@@ -8,16 +8,15 @@ class LabelInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null)
           Text(
             label!,
             style: const TextStyle(
-              fontSize: 16.0,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Colors.blueGrey,
+              color: Color.fromRGBO(60, 96, 130, 1),
             ),
           ),
         const SizedBox(height: 9.0),

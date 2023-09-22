@@ -4,24 +4,27 @@ createUserName({bool show = true}) {
   return show
       ? Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color.fromARGB(240, 250, 255, 255),
             borderRadius: BorderRadius.circular(15.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: Colors.blue.withOpacity(0.2),
-                blurRadius: 5.0,
-                spreadRadius: 0.0,
-                offset: const Offset(0, 8),
+                color: Color.fromRGBO(176, 217, 255, 1),
+                blurRadius: 30.0,
+                spreadRadius: 0.1,
+                offset: Offset(0, 12),
               ),
             ],
           ),
           child: TextField(
             decoration: InputDecoration(
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              labelText: 'Username',
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
+                borderRadius: BorderRadius.all(Radius.circular(15))
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              hintText: 'Usuario...',
+              hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1))
             ),
             onChanged: (text) {
               // ignore: avoid_print
@@ -35,25 +38,29 @@ createUserName({bool show = true}) {
 createPasword() {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: const Color.fromARGB(240, 250, 255, 255),
       borderRadius: BorderRadius.circular(15.0),
-      boxShadow: [
+      boxShadow: const [
         BoxShadow(
-          color: Colors.blue.withOpacity(0.2),
-          blurRadius: 5.0,
-          spreadRadius: 0.0,
-          offset: const Offset(0, 8),
+          color: Color.fromRGBO(176, 217, 255, 1),
+                blurRadius: 30.0,
+                spreadRadius: 0.1,
+                offset: Offset(0, 12),
         ),
       ],
     ),
     child: TextField(
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-        labelText: 'Password',
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
+          borderRadius: BorderRadius.all(Radius.circular(15))
+        ),
+        hintText: 'Contraseña...',
+        hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
         // icon: const Icon(Icons.password_outlined),
         suffixIcon: const Icon(Icons.no_encryption_gmailerrorred),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       ),
       obscureText: true,
       onChanged: (text) {
@@ -67,21 +74,26 @@ createPasword() {
 createEmail() {
   return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color.fromARGB(240, 250, 255, 255),
         borderRadius: BorderRadius.circular(15.0),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.2),
-            blurRadius: 5.0,
-            spreadRadius: 0.0,
-            offset: const Offset(0, 8),
+            color: Color.fromRGBO(176, 217, 255, 1),
+                blurRadius: 30.0,
+                spreadRadius: 0.1,
+                offset: Offset(0, 12),
           ),
         ],
       ),
       child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-          labelText: 'Email',
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
+            borderRadius: BorderRadius.all(Radius.circular(15))
+          ),
+          hintText: 'Correo...',
+          hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
           suffixText: '@gmail.com',
           //  icon: const Icon(Icons.email_outlined),
           contentPadding:
