@@ -19,9 +19,8 @@ class LabelInput extends StatelessWidget {
               color: Color.fromRGBO(60, 96, 130, 1),
             ),
           ),
-        const SizedBox(height: 9.0),
+        const SizedBox(height: 5.0),
         input,
-        const SizedBox(height: 16.0)
       ],
     );
   }
