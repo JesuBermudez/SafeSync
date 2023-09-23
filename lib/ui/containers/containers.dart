@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:safesync/models/user/user.dart';
-import 'package:safesync/services/register/api_register.dart';
 
 import '../../services/register/register.dart';
 import '../buttons/buttons_elevations.dart';

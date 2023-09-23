@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../models/user/user.dart';
 
 class ApiService {
-  static const String apiUrl = 'http://localhost:4000/api/users/create';
+  static const String apiUrl = 'https://safesync.fly.dev/api/users/create';
 
   Future<String> registerUser(User user) async {
     try {
