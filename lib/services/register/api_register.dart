@@ -13,14 +13,16 @@ class ApiService {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(user.toJson()),
       );
+
       if (response.statusCode == 201) {
         return 'OK';
-      } else if (response.statusCode == 400) {
+      }
+      if (response.statusCode == 400) {
         Map<String, dynamic> errorResponse = json.decode(response.body);
         return errorResponse['error'] ?? 'Erorr desconocido';
-      } else {
-        return 'Error Desconocido';
       }
+
+      return 'Error Desconocido';
     } catch (e) {
       return 'Error al registar';
     }
