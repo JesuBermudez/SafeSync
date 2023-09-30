@@ -1,30 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:safesync/routes/routes.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/instance_manager.dart';
+import 'package:safesync/models/user/user.dart';
+import 'package:safesync/ui/app.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('es'), // Spanish
-      ],
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: getAppRoutes(),
-    );
-  }
+  Get.put(User());
 }

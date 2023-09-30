@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
 
-import '../../models/user/user.dart';
+import 'package:safesync/models/user/user.dart';
 
 class ApiService {
   static const String apiUrl = 'https://safesync.fly.dev/api/users/create';
 
-  Future<String> registerUser(User user) async {
+  Future<String> registerUser() async {
+    User user = Get.find();
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -19,7 +21,8 @@ class ApiService {
       }
       if (response.statusCode == 400) {
         Map<String, dynamic> errorResponse = json.decode(response.body);
-        return errorResponse['error'] ?? 'Erorr desconocido';
+
+        return errorResponse['erro'] ?? 'Erorr desconocido';
       }
 
       return 'Error Desconocido';

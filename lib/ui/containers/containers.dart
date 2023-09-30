@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:safesync/models/user/user.dart';
 
-import '../../services/register/register.dart';
 import '../buttons/buttons_elevations.dart';
 import '../inputs/input_label.dart';
 import '../inputs/inputs_globals.dart';
@@ -39,51 +40,34 @@ class ContainerTitle extends StatelessWidget {
   }
 }
 
-class ContainerInputs extends StatefulWidget {
-  const ContainerInputs({
+// ignore: must_be_immutable
+class ContainerInputs extends StatelessWidget {
+  ContainerInputs({
     super.key,
-    required this.screenHeight,
     required this.textContainer,
     this.labelUsername,
     required this.view,
   });
 
-  final double screenHeight;
   final String textContainer;
   final String? labelUsername;
   final bool view;
 
-  @override
-  State<ContainerInputs> createState() => _ContainerInputsState();
-}
+  User user = Get.find();
 
-class _ContainerInputsState extends State<ContainerInputs> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emialController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emialController.dispose();
-    _passwordController.dispose();
-    _usernameController.dispose();
-    super.dispose();
-  }
-
-  void _register() {
-    register(
-        _usernameController, _passwordController, _emialController, context);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 50),
       padding: EdgeInsets.fromLTRB(
-        MediaQuery.of(context).size.width * 0.125,
-        MediaQuery.of(context).size.height * 0.075,
-        MediaQuery.of(context).size.width * 0.125,
-        widget.screenHeight * 0.10,
+        Get.width * 0.125,
+        Get.height * 0.075,
+        Get.width * 0.125,
+        Get.height * 0.10,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -110,7 +94,7 @@ class _ContainerInputsState extends State<ContainerInputs> {
       child: Column(
         children: [
           Text(
-            widget.textContainer,
+            textContainer,
             style: const TextStyle(
               fontSize: 35.0,
               fontWeight: FontWeight.bold,
@@ -124,27 +108,29 @@ class _ContainerInputsState extends State<ContainerInputs> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+          SizedBox(height: Get.height * 0.05),
           LabelInput(
-            label: widget.labelUsername,
-            input: createUserName(
-                show: widget.view, controller: _usernameController),
+            label: labelUsername,
+            input: createUserName(show: view, controller: _usernameController),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          SizedBox(height: Get.height * 0.02),
           LabelInput(
             label: 'Correo',
             input: createEmail(controller: _emialController),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          SizedBox(height: Get.height * 0.02),
           LabelInput(
             label: 'Contraseña',
             input: createPasword(controller: _passwordController),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          SizedBox(height: Get.height * 0.02),
           createRedirection(
               text: '¿Ya tienes una cuenta?', textLink: 'Inicia sesión aquí'),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          createButton(text: 'Registrarse', registerd: _register)
+          SizedBox(height: Get.height * 0.025),
+          createButton(
+              text: 'Registrarse',
+              registerd: user.dataUser(_usernameController.text,
+                  _emialController.text, _passwordController.text))
         ],
       ),
     );

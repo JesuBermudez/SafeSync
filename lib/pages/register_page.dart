@@ -2,20 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../ui/containers/containers.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
-  @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     // final screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
+    return  Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -36,7 +29,6 @@ class _RegisterPageState extends State<RegisterPage> {
             top: 140,
             child: ContainerInputs(
               view: true,
-              screenHeight: screenHeight,
               textContainer: 'Registrarse',
               labelUsername: 'Usuario',
             ),
