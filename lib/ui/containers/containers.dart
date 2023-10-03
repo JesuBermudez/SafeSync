@@ -125,10 +125,10 @@ class ContainerInputs extends StatelessWidget {
           ),
           SizedBox(height: Get.height * 0.02),
           createRedirection(
-              text: '¿Ya tienes una cuenta?', textLink: 'Inicia sesión aquí'),
+              text: view ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?", textLink: view ? "Inicia sesión aquí" : "Resgistrate aquí"),
           SizedBox(height: Get.height * 0.025),
           createButton(
-              text: 'Registrarse',
+              text: view ? 'Registrarse' : 'Entrar',
               registerd: user.dataUser(_usernameController.text,
                   _emialController.text, _passwordController.text))
         ],
