@@ -7,7 +7,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final screenWidth = MediaQuery.of(context).size.width;
-    return  Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -25,11 +25,9 @@ class LoginPage extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            top: 140,
-            child: ContainerInputs(
-              view: false,
-              textContainer: 'Iniciar sesión'
-            ),
+            top: 120,
+            child:
+                ContainerInputs(view: false, textContainer: 'Iniciar sesión'),
           ),
         ],
       ),

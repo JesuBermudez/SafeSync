@@ -5,7 +5,7 @@ class User extends GetxController {
   var password = "".obs;
   var email = "".obs;
 
-  dataUser(var username, var userEmail, var userPassword) {
+  dataUser(var userEmail, var userPassword, [var username]) {
     userName.value = username;
     email.value = userEmail;
     password.value = userPassword;
@@ -17,5 +17,9 @@ class User extends GetxController {
 
   Map<String, dynamic> toJson() {
     return {'userName': user, 'email': mail, 'password': pass};
+  }
+
+  Map<String, dynamic> toJsonForLogin() {
+    return {'email': mail, 'password': pass};
   }
 }

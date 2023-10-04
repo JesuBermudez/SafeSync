@@ -24,18 +24,35 @@ class ContainerTitle extends StatelessWidget {
         ),
       ),
       padding: const EdgeInsets.all(20.0),
-      child: Column(
-        children: [
-          Image.asset('assets/logo-200.png', height: 80),
-          const Text(
-            'SafeSync',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 42.0,
-                fontWeight: FontWeight.bold),
-          )
-        ],
-      ),
+      child: Get.height > 800
+          ? Column(
+              children: [
+                Image.asset('assets/logo-200.png', height: 80),
+                const Text(
+                  'SafeSync',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 42.0,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            )
+          : Container(
+              padding: const EdgeInsets.only(bottom: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/logo-200.png', height: 80),
+                  const Text(
+                    'SafeSync',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 42.0,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }
@@ -56,11 +73,14 @@ class ContainerInputs extends StatelessWidget {
   User user = Get.find();
 
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emialController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final double content =
+        view ? (Get.height * 0.175) + 433 : (Get.height * 0.175) + 379;
+
     return Container(
       margin: const EdgeInsets.only(top: 50),
       padding: EdgeInsets.fromLTRB(
@@ -96,7 +116,7 @@ class ContainerInputs extends StatelessWidget {
           Text(
             textContainer,
             style: const TextStyle(
-              fontSize: 35.0,
+              fontSize: 40.0,
               fontWeight: FontWeight.bold,
               color: Color.fromRGBO(47, 159, 255, 1),
               shadows: [
@@ -108,29 +128,38 @@ class ContainerInputs extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: Get.height * 0.05),
+          SizedBox(height: (Get.height - content) * 0.15),
           LabelInput(
             label: labelUsername,
             input: createUserName(show: view, controller: _usernameController),
           ),
-          SizedBox(height: Get.height * 0.02),
+          view
+              ? SizedBox(height: (Get.height - content) * 0.05)
+              : const SizedBox(),
           LabelInput(
             label: 'Correo',
-            input: createEmail(controller: _emialController),
+            input: createEmail(controller: _emailController),
           ),
-          SizedBox(height: Get.height * 0.02),
+          view
+              ? SizedBox(height: (Get.height - content) * 0.05)
+              : SizedBox(height: (Get.height - content) * 0.08),
           LabelInput(
             label: 'Contraseña',
             input: createPasword(controller: _passwordController),
           ),
-          SizedBox(height: Get.height * 0.02),
+          SizedBox(height: (Get.height - content) * 0.08),
           createRedirection(
-              text: view ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?", textLink: view ? "Inicia sesión aquí" : "Resgistrate aquí"),
-          SizedBox(height: Get.height * 0.025),
+            text: view ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?",
+            textLink: view ? "Inicia sesión aquí" : "Registrate aquí",
+          ),
+          SizedBox(height: (Get.height - content) * 0.08),
           createButton(
               text: view ? 'Registrarse' : 'Entrar',
-              registerd: user.dataUser(_usernameController.text,
-                  _emialController.text, _passwordController.text))
+              registerd: view
+                  ? user.dataUser(_emailController.text,
+                      _passwordController.text, _usernameController.text)
+                  : user.dataUser(
+                      _emailController.text, _passwordController.text))
         ],
       ),
     );

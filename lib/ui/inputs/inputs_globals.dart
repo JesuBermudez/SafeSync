@@ -67,6 +67,7 @@ createPasword({required TextEditingController controller}) {
           hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
           // icon: const Icon(Icons.password_outlined),
           suffixIcon: IconButton(
+            padding: const EdgeInsets.only(right: 15),
             icon: isPasswordVisible.value
                 ? const Icon(Icons.visibility_off)
                 : const Icon(Icons.visibility),
@@ -84,32 +85,43 @@ createPasword({required TextEditingController controller}) {
 }
 
 createEmail({required TextEditingController controller}) {
-  return Container(
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(240, 250, 255, 255),
-        borderRadius: BorderRadius.circular(15.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(176, 217, 255, 1),
-            blurRadius: 30.0,
-            spreadRadius: 0.1,
-            offset: Offset(0, 12),
+  var sufix = "".obs;
+
+  return Obx(
+    () {
+      return Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(240, 250, 255, 255),
+            borderRadius: BorderRadius.circular(15.0),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(176, 217, 255, 1),
+                blurRadius: 30.0,
+                spreadRadius: 0.1,
+                offset: Offset(0, 12),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0)),
-          enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          hintText: 'Correo...',
-          hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
-          //  icon: const Icon(Icons.email_outlined),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        ),
-        keyboardType: TextInputType.emailAddress,
-      ));
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0)),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                hintText: 'Correo...',
+                hintStyle:
+                    const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
+                contentPadding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
+                suffixText: sufix.value == "" ? null : sufix.value),
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (value) {
+              sufix.value = controller.text.contains("@") ? "" : "@gmail.com";
+            },
+          ));
+    },
+  );
 }

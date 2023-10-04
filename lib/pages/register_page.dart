@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../ui/containers/containers.dart';
 
@@ -8,17 +9,17 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final screenWidth = MediaQuery.of(context).size.width;
-    return  Scaffold(
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           //Fondo azul con logo y nombre de la app
-          const Positioned(
+          Positioned(
             top: 0,
             left: 0,
             right: 0,
-            height: 215,
-            child: ContainerTitle(),
+            height: Get.height > 800 ? 215 : 150,
+            child: const ContainerTitle(),
           ),
 
           //Contenedor de los imputs
@@ -26,7 +27,7 @@ class RegisterPage extends StatelessWidget {
             bottom: 0,
             left: 0,
             right: 0,
-            top: 140,
+            top: Get.height > 800 ? 120 : 70,
             child: ContainerInputs(
               view: true,
               textContainer: 'Registrarse',

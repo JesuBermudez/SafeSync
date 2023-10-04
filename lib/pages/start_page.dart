@@ -4,9 +4,7 @@ import 'package:get/get.dart';
 class StartPage extends StatelessWidget {
   StartPage({super.key});
 
-  final double content = Get.height - Get.width > 300
-      ? (Get.height * 0.15) + (Get.width * 0.8) + 140
-      : (Get.height * 0.15) + 540;
+  final double content = (Get.height * 0.45) + 140;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +21,13 @@ class StartPage extends StatelessWidget {
           ],
         ),
       ),
-      //
       child: Column(
         children: [
           SizedBox(height: (Get.height - content) * 0.35),
           // Imagen
           Image.asset(
             "assets/Digital personal files-amico.png",
-            width: (Get.height - Get.width > 300) ? Get.width * 0.8 : 400,
+            height: Get.height * 0.3,
           ),
           SizedBox(height: (Get.height - content) * 0.25),
           // Titulo
@@ -49,7 +46,7 @@ class StartPage extends StatelessWidget {
           // Texto
           Padding(
               padding: EdgeInsets.fromLTRB(
-                  (Get.width * 0.15) - 15, 20, (Get.width * 0.15) - 15, 0),
+                  (Get.width - 360) / 2, 20, (Get.width - 360) / 2, 0),
               child: const Text(
                 "Todos tus archivos disponibles en todo momento en un solo lugar",
                 style: TextStyle(
@@ -61,7 +58,9 @@ class StartPage extends StatelessWidget {
           Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.offNamed("/login");
+                },
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(20),
                   shape: MaterialStateProperty.all(

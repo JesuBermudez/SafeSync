@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         Locale('es'), // Spanish
       ],
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/startpage',
       routes: getAppRoutes(),
     );
   }

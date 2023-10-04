@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:safesync/services/login/login.dart';
 import 'package:safesync/services/register/register.dart';
 
 createButton(
-    {required String text, VoidCallback? registerd, VoidCallback? login}) {
+    {required String text, VoidCallback? registerd, VoidCallback? logind}) {
   return ElevatedButton(
-    onPressed: text == 'Registrarse'
-        ? () {
-            register();
-          }
-        : () {},
+    onPressed: text == 'Registrarse' ? () => register() : () => login(),
     style: ButtonStyle(
       elevation: const MaterialStatePropertyAll(20),
       fixedSize: const MaterialStatePropertyAll(
