@@ -26,8 +26,11 @@ class LoginPage extends StatelessWidget {
             left: 0,
             right: 0,
             top: 120,
-            child:
-                ContainerInputs(view: false, textContainer: 'Iniciar sesión'),
+            child: ContainerInputs(
+              view: false,
+              textContainer: 'Iniciar sesión',
+              labelUsername: "",
+            ),
           ),
         ],
       ),

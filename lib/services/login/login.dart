@@ -11,8 +11,8 @@ void login() async {
     showDialog(
       context: Get.context!,
       builder: (_) => const AlertDialog(
-        title: Text('¡ATENCIÓN!'),
-        content: Text('Por favor, no deje campos vacios.'),
+        title: Text('Atención'),
+        content: Text('Por favor, no deje campos vacíos.'),
       ),
     );
     return;

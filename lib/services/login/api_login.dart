@@ -17,6 +17,7 @@ class ApiService {
       );
 
       if (response.statusCode == 201) {
+        print(response.body);
         return 'OK';
       }
       if (response.statusCode == 400) {

@@ -6,13 +6,14 @@ import 'api_register.dart';
 
 void register() async {
   User user = Get.find();
+  print(user.toJson());
   // ignore: unrelated_type_equality_checks
   if (user.user == '' || user.mail == '' || user.pass == '') {
     showDialog(
       context: Get.context!,
       builder: (_) => const AlertDialog(
-        title: Text('¡ATENCIÓN!'),
-        content: Text('Por favor, no deje campos vacios.'),
+        title: Text('Atención'),
+        content: Text('Por favor, no deje campos vacíos.'),
       ),
     );
     return;
@@ -49,6 +50,7 @@ void register() async {
           content: Text('Fuiste registrado con exito'),
         ),
       );
+      user.clear();
     } else {
       // ignore: use_build_context_synchronously
       showDialog(

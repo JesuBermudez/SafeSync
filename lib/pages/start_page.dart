@@ -13,11 +13,11 @@ class StartPage extends StatelessWidget {
       // Color de fondo
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment(0.0, 0.0),
-          end: Alignment(1, 0.70),
+          begin: Alignment(0.0, -0.3),
+          end: Alignment(1.5, 0.30),
           colors: <Color>[
             Color.fromRGBO(244, 250, 255, 1),
-            Color.fromRGBO(176, 210, 255, 1),
+            Color.fromRGBO(154, 209, 255, 1),
           ],
         ),
       ),
@@ -34,59 +34,56 @@ class StartPage extends StatelessWidget {
           const Text("Almacenamiento en la nube",
               style: TextStyle(
                   color: Color.fromRGBO(29, 50, 85, 1),
-                  fontSize: 32,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   shadows: [
                     Shadow(
                       offset: Offset(2.0, 2.0),
-                      blurRadius: 2.0,
+                      blurRadius: 4.5,
                       color: Color.fromARGB(73, 0, 0, 0),
                     ),
                   ])),
           // Texto
           Padding(
               padding: EdgeInsets.fromLTRB(
-                  (Get.width - 360) / 2, 20, (Get.width - 360) / 2, 0),
+                  (Get.width - 300) / 2, 20, (Get.width - 300) / 2, 0),
               child: const Text(
                 "Todos tus archivos disponibles en todo momento en un solo lugar",
                 style: TextStyle(
-                    color: Color.fromRGBO(45, 45, 45, 1), fontSize: 24),
+                    color: Color.fromRGBO(45, 45, 45, 1), fontSize: 20),
                 textAlign: TextAlign.center,
               )),
           SizedBox(height: (Get.height - content) * 0.5),
           // Boton
           Align(
-              alignment: Alignment.bottomRight,
+              alignment: const Alignment(0.8, 1),
               child: ElevatedButton(
                 onPressed: () {
                   Get.offNamed("/login");
                 },
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(20),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                    elevation: MaterialStateProperty.all(15),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
                     ),
-                  ),
-                  backgroundColor: MaterialStateProperty.all(
-                    Colors.transparent,
-                  ),
-                  shadowColor: MaterialStateProperty.all(
-                    const Color.fromARGB(80, 41, 109, 255),
-                  ),
-                  overlayColor: MaterialStateProperty.all(
-                    Colors.transparent,
-                  ),
-                  fixedSize: MaterialStateProperty.all(
-                    const Size(220, 60),
-                  ),
-                ),
+                    backgroundColor: MaterialStateProperty.all(
+                      Colors.transparent,
+                    ),
+                    shadowColor: MaterialStateProperty.all(
+                      Color.fromARGB(123, 0, 110, 255),
+                    ),
+                    fixedSize: MaterialStateProperty.all(
+                      const Size(190, 60),
+                    ),
+                    padding: MaterialStateProperty.all(EdgeInsets.zero)),
                 child: Ink(
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: <Color>[
-                        Color.fromRGBO(11, 97, 236, 1),
-                        Color.fromRGBO(90, 180, 251, 1)
+                        Color.fromRGBO(48, 79, 255, 1),
+                        Color.fromRGBO(0, 165, 255, 1)
                       ],
                     ),
                     borderRadius: BorderRadius.circular(15.0),

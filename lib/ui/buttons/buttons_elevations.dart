@@ -12,7 +12,7 @@ createButton(
         Size(300, 55),
       ),
       shadowColor: const MaterialStatePropertyAll(
-        Color.fromARGB(150, 33, 37, 243),
+        Color.fromARGB(125, 33, 72, 243),
       ),
       shape: MaterialStatePropertyAll(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),

@@ -6,20 +6,20 @@ createRedirection({required String text, required String textLink}) {
     Text(
       '$text ',
       style: const TextStyle(
-        fontSize: 16.0,
+        fontSize: 15.0,
       ),
     ),
     InkWell(
         onTap: () {
           // pantalla para iniciar sesión
-          textLink == "Inicia sesión aquí"
+          textLink == "Inicia sesión"
               ? Get.offNamed("/login")
               : Get.offNamed("/register");
         },
         child: Text(
           textLink,
           style: const TextStyle(
-            fontSize: 16.0,
+            fontSize: 15.5,
             color: Colors.blue,
             decoration: TextDecoration.underline,
           ),

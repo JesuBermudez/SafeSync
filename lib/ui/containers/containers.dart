@@ -84,10 +84,10 @@ class ContainerInputs extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 50),
       padding: EdgeInsets.fromLTRB(
-        Get.width * 0.125,
-        Get.height * 0.075,
-        Get.width * 0.125,
-        Get.height * 0.10,
+        Get.width * 0.10,
+        Get.height * 0.06,
+        Get.width * 0.10,
+        0,
       ),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -123,12 +123,12 @@ class ContainerInputs extends StatelessWidget {
                 Shadow(
                     offset: Offset(1, 2),
                     color: Color.fromRGBO(114, 114, 114, 0.498),
-                    blurRadius: 3)
+                    blurRadius: 5.5)
               ],
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: (Get.height - content) * 0.15),
+          SizedBox(height: (Get.height - content) * 0.13),
           LabelInput(
             label: labelUsername,
             input: createUserName(show: view, controller: _usernameController),
@@ -150,14 +150,17 @@ class ContainerInputs extends StatelessWidget {
           SizedBox(height: (Get.height - content) * 0.08),
           createRedirection(
             text: view ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?",
-            textLink: view ? "Inicia sesión aquí" : "Registrate aquí",
+            textLink: view ? "Inicia sesión" : "Registrate",
           ),
           SizedBox(height: (Get.height - content) * 0.08),
           createButton(
               text: view ? 'Registrarse' : 'Entrar',
-              registerd: view
+              registerd: () => view
                   ? user.dataUser(_emailController.text,
                       _passwordController.text, _usernameController.text)
+                  : null,
+              logind: () => view
+                  ? null
                   : user.dataUser(
                       _emailController.text, _passwordController.text))
         ],

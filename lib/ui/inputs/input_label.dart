@@ -14,7 +14,7 @@ class LabelInput extends StatelessWidget {
           Text(
             label!,
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 19,
               fontWeight: FontWeight.bold,
               color: Color.fromRGBO(60, 96, 130, 1),
             ),
