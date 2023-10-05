@@ -5,7 +5,15 @@ import 'package:safesync/services/register/register.dart';
 createButton(
     {required String text, VoidCallback? registerd, VoidCallback? logind}) {
   return ElevatedButton(
-    onPressed: text == 'Registrarse' ? () => register() : () => login(),
+    onPressed: text == 'Registrarse'
+        ? () {
+            registerd!();
+            register();
+          }
+        : () {
+            logind!();
+            login();
+          },
     style: ButtonStyle(
       elevation: const MaterialStatePropertyAll(20),
       fixedSize: const MaterialStatePropertyAll(
@@ -22,13 +30,14 @@ createButton(
     ),
     child: Ink(
       decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: <Color>[
-              Color.fromRGBO(90, 180, 251, 1),
-              Color.fromRGBO(11, 97, 236, 1),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(50.0)),
+        gradient: const LinearGradient(
+          colors: <Color>[
+            Color.fromRGBO(90, 180, 251, 1),
+            Color.fromRGBO(11, 97, 236, 1),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(50.0),
+      ),
       child: Container(
         alignment: Alignment.center,
         child: Text(

@@ -6,11 +6,10 @@ class User extends GetxController {
   var email = "".obs;
   var token = "".obs;
 
-  dataUser(var userEmail, var userPassword, [var username = ""]) {
+  dataUser(String userEmail, String userPassword, [String username = ""]) {
     userName.value = username;
     email.value = userEmail;
     password.value = userPassword;
-    print("dataUser ${toJson()}");
   }
 
   void clear() {
