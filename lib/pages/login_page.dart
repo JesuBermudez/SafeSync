@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../models/user/user.dart';
 import '../ui/containers/containers.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  LoginPage({super.key});
+
+  final User user = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
+    user.clear();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
 
 class ApiService {
-  static const String apiUrl = 'http://localhost:4000/api/auth/login';
+  static const String apiUrl = 'https://safesync.fly.dev/api/auth/login';
 
-  Future<String> login() async {
+  Future<Map<String, dynamic>> login() async {
     User user = Get.find();
     try {
       final response = await http.post(
@@ -16,19 +16,17 @@ class ApiService {
         body: json.encode(user.toJsonForLogin()),
       );
 
-      if (response.statusCode == 201) {
-        print(response.body);
-        return 'OK';
-      }
-      if (response.statusCode == 400) {
-        Map<String, dynamic> errorResponse = json.decode(response.body);
+      Map<String, dynamic> data = json.decode(response.body);
 
-        return errorResponse['erro'] ?? 'Erorr desconocido';
+      if (data.containsKey('userEmailCorrect')) {
+        return data;
       }
 
-      return 'Error Desconocido';
+      return data.containsKey('error')
+          ? {'Error': data['error']}
+          : {'Error': 'Error desconocido'};
     } catch (e) {
-      return 'Error al iniciar sesión';
+      return {'Error': 'Error al iniciar sesión'};
     }
   }
 }

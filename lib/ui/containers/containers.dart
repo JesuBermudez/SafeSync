@@ -156,13 +156,16 @@ class ContainerInputs extends StatelessWidget {
           createButton(
               text: view ? 'Registrarse' : 'Entrar',
               registerd: () => view
-                  ? user.dataUser(_emailController.text,
-                      _passwordController.text, _usernameController.text)
+                  ? user.dataUser(
+                      userEmail: _emailController.text,
+                      userPassword: _passwordController.text,
+                      username: _usernameController.text)
                   : null,
               logind: () => view
                   ? null
                   : user.dataUser(
-                      _emailController.text, _passwordController.text))
+                      userEmail: _emailController.text,
+                      userPassword: _passwordController.text))
         ],
       ),
     );
