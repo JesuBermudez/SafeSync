@@ -47,6 +47,7 @@ void login() async {
 
       prefs.setString('userId', sucess["userEmailCorrect"]["_id"]);
       prefs.setString('userToken', sucess["token"]);
+      prefs.setBool('firstTime', false);
 
       Get.offNamed("/app");
     } else {
@@ -62,7 +63,6 @@ void login() async {
   } catch (e) {
     // Hide loading indicator
     Navigator.pop(Get.context!);
-    print(e);
 
     // ignore: use_build_context_synchronously
     showDialog(

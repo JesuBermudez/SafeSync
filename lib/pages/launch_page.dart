@@ -15,7 +15,7 @@ class LaunchPage extends StatelessWidget {
         end: Alignment(1, 0.75),
         colors: <Color>[
           Color.fromRGBO(244, 250, 255, 1),
-          Color.fromRGBO(167, 205, 255, 1),
+          Color.fromRGBO(155, 198, 255, 1),
         ],
       )),
       child: Column(

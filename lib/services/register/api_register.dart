@@ -22,7 +22,7 @@ class ApiService {
       if (response.statusCode == 400) {
         Map<String, dynamic> errorResponse = json.decode(response.body);
 
-        return errorResponse['erro'] ?? 'Erorr desconocido';
+        return errorResponse['error'] ?? 'Error desconocido';
       }
 
       return 'Error Desconocido';

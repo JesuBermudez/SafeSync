@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/ui/containers/pages_container.dart';
+import 'package:safesync/ui/inputs/search_input.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  TextEditingController search = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment(0.0, 0.0),
-        end: Alignment(1, 0.70),
-        colors: <Color>[
-          Color.fromRGBO(244, 250, 255, 1),
-          Color.fromRGBO(176, 210, 255, 1),
-        ],
-      )),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            Get.width * 0.02, Get.height * 0.01, Get.width * 0.02, 20),
-      ),
-    );
+    return PagesContainer(
+        content: Column(
+      children: [SearchInput(controller: search)],
+    ));
   }
 }

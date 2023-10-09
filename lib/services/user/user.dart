@@ -10,13 +10,20 @@ Future<String> getUser() async {
 
   final userId = prefs.getString('userId');
   final userToken = prefs.getString('userToken');
+  final userApp = prefs.getBool('firstTime');
+
+  if (userApp == null) {
+    return "firstTime";
+  }
 
   ApiService apiService = ApiService();
 
   try {
     Map<String, dynamic> sucess = await apiService.getUser(userId!, userToken!);
 
-    if (sucess.length > 1) {
+    print('$userId - $userToken');
+
+    if (!sucess.containsKey("Error")) {
       user.dataUser(
           userEmail: sucess["email"],
           userPassword: sucess["password"],
