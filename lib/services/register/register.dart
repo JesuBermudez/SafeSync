@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/user/user.dart';
 import 'api_register.dart';
 
 void register() async {
   User user = Get.find();
-  print(user.toJson());
+  final prefs = await SharedPreferences.getInstance();
+
   // ignore: unrelated_type_equality_checks
   if (user.user == '' || user.mail == '' || user.pass == '') {
     showDialog(
@@ -51,6 +53,7 @@ void register() async {
         ),
       );
       user.clear();
+      prefs.setBool('firstTime', false);
     } else {
       // ignore: use_build_context_synchronously
       showDialog(
