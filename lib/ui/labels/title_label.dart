@@ -9,7 +9,7 @@ Widget titleLabel(String textContent) {
         fontWeight: FontWeight.bold,
         shadows: [
           Shadow(
-            color: Color.fromARGB(90, 0, 0, 0),
+            color: Color.fromARGB(70, 0, 110, 255),
             offset: Offset(1, 1),
             blurRadius: 6,
           )

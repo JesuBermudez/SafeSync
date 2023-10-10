@@ -79,7 +79,18 @@ class HomePage extends StatelessWidget {
                               () {},
                               Colors.cyan[200])
                         ],
-                      ))
+                      )),
+                  const SizedBox(height: 30),
+                  Row(children: [
+                    titleLabel("Reciente"),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    const Icon(
+                      Icons.arrow_downward_rounded,
+                      color: Color.fromRGBO(0, 81, 151, 1),
+                    )
+                  ])
                 ],
               ))
         ],
