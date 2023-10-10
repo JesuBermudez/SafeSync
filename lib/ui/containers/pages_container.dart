@@ -23,7 +23,7 @@ class PagesContainer extends StatelessWidget {
       )),
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-            Get.width * 0.02, Get.height * 0.01, Get.width * 0.02, 20),
+            Get.width * 0.04, Get.height * 0.01, Get.width * 0.04, 20),
         child: content,
       ),
     );

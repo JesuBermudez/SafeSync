@@ -11,24 +11,20 @@ class LaunchPage extends StatelessWidget {
       width: Get.width,
       decoration: const BoxDecoration(
           gradient: LinearGradient(
-        begin: Alignment(-1.0, 0.0),
-        end: Alignment(1, 0.75),
-        colors: <Color>[
-          Color.fromRGBO(244, 250, 255, 1),
-          Color.fromRGBO(155, 198, 255, 1),
-        ],
-      )),
+              begin: Alignment(-1.0, 0.0),
+              end: Alignment(1, 0.75),
+              colors: <Color>[
+            Color.fromRGBO(167, 205, 255, 1),
+            Color.fromRGBO(71, 151, 255, 1)
+          ])),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FadeInDown(
-            duration: const Duration(milliseconds: 1500),
-            child: Image.asset(
-              'assets/logo-200.png',
-              width: Get.height * 0.25,
-            ),
-          ),
+              duration: const Duration(milliseconds: 1500),
+              child:
+                  Image.asset('assets/logo-200.png', width: Get.height * 0.25)),
           FadeInUp(
             duration: const Duration(milliseconds: 1500),
             child: Text('SafeSync',

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,8 +22,6 @@ Future<String> getUser() async {
 
   try {
     Map<String, dynamic> sucess = await apiService.getUser(userId!, userToken!);
-
-    print('$userId - $userToken');
 
     if (!sucess.containsKey("Error")) {
       user.dataUser(

@@ -25,10 +25,7 @@ class SearchInput extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-            prefixIcon: const Icon(
-              SafeSyncIcons.lupa,
-              size: 26,
-            ),
+            prefixIcon: const Icon(SafeSyncIcons.lupa, size: 26),
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
             enabledBorder: const OutlineInputBorder(

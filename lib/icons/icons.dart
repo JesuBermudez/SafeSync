@@ -37,6 +37,8 @@ class SafeSyncIcons {
 
   static const IconData lupa =
       IconData(0xe010, fontFamily: _fontFamily, fontPackage: _fontPackage);
+  static const IconData foursquares =
+      IconData(0xe013, fontFamily: _fontFamily, fontPackage: _fontPackage);
 }
 
 extension IconDataExt on IconData {

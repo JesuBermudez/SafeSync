@@ -16,9 +16,6 @@ class AppScreen extends StatelessWidget {
     return FutureBuilder<String>(
         future: getUser(),
         builder: (context, snapshot) {
-          if (user.email.value.isNotEmpty) {
-            return AppContent();
-          }
           if (snapshot.connectionState != ConnectionState.waiting) {
             if (snapshot.data!.isEmpty || snapshot.hasError) {
               Future.delayed(const Duration(seconds: 1), () {
@@ -31,9 +28,10 @@ class AppScreen extends StatelessWidget {
               Get.offNamed("/startpage");
             });
           }
-          if (snapshot.hasData &&
-              snapshot.data!.isNotEmpty &&
-              snapshot.data != "firstTime") {
+          if (user.email.value.isNotEmpty ||
+              snapshot.hasData &&
+                  snapshot.data!.isNotEmpty &&
+                  snapshot.data != "firstTime") {
             return AppContent();
           } else {
             return const Scaffold(body: LaunchPage());
@@ -102,16 +100,10 @@ class AppContent extends StatelessWidget {
                       activeIcon: Icon(Icons.folder, color: activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
-                      icon: Icon(
-                        Icons.home_outlined,
-                        size: 28,
-                        color: inactiveColor,
-                      ),
-                      activeIcon: Icon(
-                        Icons.home_rounded,
-                        size: 28,
-                        color: activeColor,
-                      )),
+                      icon: Icon(Icons.home_outlined,
+                          size: 28, color: inactiveColor),
+                      activeIcon: Icon(Icons.home_rounded,
+                          size: 28, color: activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
                       icon: Icon(Icons.insert_comment_outlined,
