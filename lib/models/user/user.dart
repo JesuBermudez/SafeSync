@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class User extends GetxController {
   var userName = "".obs;
@@ -29,7 +30,9 @@ class User extends GetxController {
         .toList();
   }
 
-  void clear() {
+  void clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userToken');
     email.value = '';
     password.value = '';
   }

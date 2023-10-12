@@ -46,11 +46,13 @@ class AppContent extends StatelessWidget {
 
   var currentIndex = 2.obs;
   List<Widget> pages = [
-    const Scaffold(),
-    const Scaffold(),
+    Container(),
+    Container(),
     HomePage(),
-    const Scaffold(),
-    const Scaffold(),
+    Container(),
+    IconButton(
+        icon: const Icon(Icons.logout_rounded),
+        onPressed: () => Get.offNamed("/login"))
   ];
 
   @override

@@ -26,6 +26,7 @@ class ApiService {
           ? {'Error': data['error']}
           : {'Error': 'Error desconocido'};
     } catch (e) {
+      print(e);
       return {'Error': 'Error al iniciar sesión'};
     }
   }

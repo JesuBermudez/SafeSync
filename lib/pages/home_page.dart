@@ -137,16 +137,21 @@ class HomePage extends StatelessWidget {
   }
 }
 
-const iconImage = Icon(Icons.image_rounded, size: 84, color: Colors.green);
-const iconVideo = Icon(Icons.play_arrow, size: 84, color: Colors.red);
-const iconDocument = Icon(Icons.description, size: 84, color: Colors.blue);
+const iconImage = Icon(Icons.image_rounded, size: 89, color: Colors.green);
+const iconVideo = Icon(Icons.play_arrow, size: 89, color: Colors.red);
+const iconDocument = Icon(Icons.description, size: 89, color: Colors.blue);
 
 Future<String> downloadFile(String url, String filename) async {
-  final response = await http.get(Uri.parse(url));
   final directory = await getApplicationDocumentsDirectory();
   final filePath = '${directory.path}/$filename';
   final file = File(filePath);
-  await file.writeAsBytes(response.bodyBytes);
+
+  if (!file.existsSync()) {
+    // Si el archivo no existe, descargarlo
+    final response = await http.get(Uri.parse(url));
+    await file.writeAsBytes(response.bodyBytes);
+  }
+
   return filePath;
 }
 
@@ -172,8 +177,10 @@ Future<List<Widget>> getRecentFilesWidgets(User user) async {
     final directoryName = item['directoryName'];
 
     String filePath = Uri.parse(
-            'https://safesync.fly.dev/api/files/unidad/$directoryName/${file.nameFile}')
+            'https://safesync.fly.dev/api/files/unidad/${user.userName}/$directoryName/${file.nameFile}')
         .toString();
+
+    print(filePath);
 
     final isImage = _isImageFile(file.nameFile);
     final isVideo = _isVideoFile(file.nameFile);

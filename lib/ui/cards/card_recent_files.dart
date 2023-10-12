@@ -20,14 +20,16 @@ Widget recentFiles(
               // se muestra la imagen spoiler, sino, el icono de documento, y sino, un icono por defecto
               imageCard != null
                   ? Container(
-                      width: 120.0,
-                      height: 74,
-                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      width: 130.0,
+                      height: 69,
+                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(10)),
                       child: imageCard,
                     )
                   : (iconCard ??
                       const Icon(Icons.question_mark_rounded, size: 84)),
-              imageCard != null ? const SizedBox(height: 10) : const SizedBox(),
               Container(
                 alignment: Alignment.center,
                 width: 130,
@@ -52,7 +54,7 @@ Widget recentFiles(
           ),
         ),
         Positioned(
-          top: 0,
+          top: -2,
           right: 0,
           child: PopupMenuButton<String>(
             padding: EdgeInsets.zero,

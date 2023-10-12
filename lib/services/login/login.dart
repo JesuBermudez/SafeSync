@@ -51,6 +51,7 @@ void login() async {
           content: Text(sucess['Error']),
         ),
       );
+      print(sucess['Error']);
     }
   } catch (e) {
     // Hide loading indicator
