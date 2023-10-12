@@ -7,24 +7,26 @@ class User extends GetxController {
   var avatar = "".obs;
   var premium = false.obs;
   var space = 0.obs;
-  var directories = [].obs;
+  var directories = <Directories>[].obs;
+  var shouldShowImage = true.obs;
 
-  dataUser(
-      {String? userEmail,
-      String? userPassword,
-      String? username,
-      String? userAvatar,
-      bool? userPremium,
-      int? userSpace,
-      List? userDirectories}) {
+  dataUser({String? userEmail, String? userPassword, String? username}) {
     userName.value = username ?? userName.value;
     email.value = userEmail ?? email.value;
     password.value = userPassword ?? password.value;
-    avatar.value = userAvatar ?? avatar.value;
-    premium.value = userPremium ?? premium.value;
-    space.value = userSpace ?? space.value;
-    // ignore: invalid_use_of_protected_member
-    directories.value = userDirectories ?? directories.value;
+  }
+
+  jsonFromUser(Map<String, dynamic> json) {
+    userName.value = json["userName"];
+    email.value = json["email"];
+    password.value = json["password"];
+    avatar.value = json["avatar"];
+    premium.value = json["premiun"] ?? false;
+    space.value = json["space"] ?? 5000;
+
+    directories.value = json["directories"]
+        .map<Directories>((dirJson) => Directories(dirJson))
+        .toList();
   }
 
   void clear() {
@@ -42,5 +44,28 @@ class User extends GetxController {
 
   Map<String, dynamic> toJsonForLogin() {
     return {'email': mail, 'password': pass};
+  }
+}
+
+class Directories extends GetxController {
+  var nameDirectory = "".obs;
+  var files = <Files>[].obs;
+
+  Directories(Map<String, dynamic> json) {
+    nameDirectory.value = json["nameDirectory"];
+    if (json["files"] != null) {
+      files.value =
+          (json["files"] as List).map((fileJson) => Files(fileJson)).toList();
+    }
+  }
+}
+
+class Files {
+  String nameFile = "";
+  String date = "";
+
+  Files(Map<String, dynamic> json) {
+    nameFile = json["nameFile"];
+    date = json["Date"];
   }
 }

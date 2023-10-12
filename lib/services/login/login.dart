@@ -35,15 +35,7 @@ void login() async {
     Navigator.pop(Get.context!);
 
     if (sucess.containsKey('userEmailCorrect')) {
-      // ignore: use_build_context_synchronously
-      user.dataUser(
-          userEmail: sucess["userEmailCorrect"]["email"],
-          userPassword: sucess["userEmailCorrect"]["password"],
-          username: sucess["userEmailCorrect"]["userName"],
-          userAvatar: sucess["userEmailCorrect"]["avatar"],
-          userPremium: sucess["userEmailCorrect"]["premiun"],
-          userSpace: sucess["userEmailCorrect"]["space"],
-          userDirectories: sucess["userEmailCorrect"]["directories"]);
+      user.jsonFromUser(sucess["userEmailCorrect"]);
 
       prefs.setString('userId', sucess["userEmailCorrect"]["_id"]);
       prefs.setString('userToken', sucess["token"]);

@@ -24,14 +24,7 @@ Future<String> getUser() async {
     Map<String, dynamic> sucess = await apiService.getUser(userId!, userToken!);
 
     if (!sucess.containsKey("Error")) {
-      user.dataUser(
-          userEmail: sucess["email"],
-          userPassword: sucess["password"],
-          username: sucess["userName"],
-          userAvatar: sucess["avatar"],
-          userPremium: sucess["premiun"],
-          userSpace: sucess["space"],
-          userDirectories: sucess["directories"]);
+      user.jsonFromUser(sucess);
 
       return "Session";
     } else {

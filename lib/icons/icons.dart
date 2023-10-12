@@ -39,6 +39,10 @@ class SafeSyncIcons {
       IconData(0xe010, fontFamily: _fontFamily, fontPackage: _fontPackage);
   static const IconData foursquares =
       IconData(0xe013, fontFamily: _fontFamily, fontPackage: _fontPackage);
+  static const IconData file =
+      IconData(0xe014, fontFamily: _fontFamily, fontPackage: _fontPackage);
+  static const IconData file_duplicated_name =
+      IconData(0xe015, fontFamily: _fontFamily, fontPackage: _fontPackage);
 }
 
 extension IconDataExt on IconData {

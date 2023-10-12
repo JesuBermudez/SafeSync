@@ -21,10 +21,12 @@ class PagesContainer extends StatelessWidget {
           Color.fromRGBO(167, 220, 255, 1),
         ],
       )),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-            Get.width * 0.04, Get.height * 0.01, Get.width * 0.04, 20),
-        child: content,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              Get.width * 0.04, Get.height * 0.01, Get.width * 0.04, 0),
+          child: content,
+        ),
       ),
     );
   }
