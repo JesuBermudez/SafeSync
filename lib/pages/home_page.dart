@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/ui/containers/file_open_container.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
@@ -22,117 +23,158 @@ class HomePage extends StatelessWidget {
 
   User user = Get.find();
   TextEditingController search = TextEditingController();
+  var isShowingFileWidget = false.obs;
+  var selectedFile = {}.obs;
 
   @override
   Widget build(BuildContext context) {
     final cardSpace = (Get.width - (Get.width * 0.08)) - 10;
     final spacing =
         (cardSpace - (150 * (cardSpace ~/ 150))) / ((cardSpace ~/ 150) - 1);
-    return PagesContainer(
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SearchInput(controller: search),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                titleLabel("Almacenamiento"),
-                const SizedBox(height: 20),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
+    return Stack(
+      children: [
+        PagesContainer(
+          content: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SearchInput(controller: search),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        fileCategory(
-                            const Icon(
-                              SafeSyncIcons.foursquares,
-                              color: Colors.white,
-                              size: 80,
-                            ),
-                            const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                            "Todo",
-                            () {}),
-                        const SizedBox(width: 12),
-                        fileCategory(
-                            const Icon(
-                              Icons.folder,
-                              color: Colors.white,
-                              size: 60,
-                            ),
-                            const EdgeInsets.fromLTRB(15, 13, 15, 12),
-                            "Carpetas",
-                            () {},
-                            Colors.red[500]),
-                        const SizedBox(width: 12),
-                        fileCategory(
-                            const Icon(
-                              Icons.image_rounded,
-                              color: Colors.white,
-                              size: 60,
-                            ),
-                            const EdgeInsets.fromLTRB(15, 13, 15, 12),
-                            "Fotos",
-                            () {},
-                            const Color.fromARGB(255, 228, 75, 255)),
-                        const SizedBox(width: 12),
-                        fileCategory(
-                            const Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                              size: 60,
-                            ),
-                            const EdgeInsets.fromLTRB(15, 13, 15, 12),
-                            "Videos",
-                            () {},
-                            Colors.cyan[300]),
-                        const SizedBox(width: 12),
-                        fileCategory(
-                            const Icon(
-                              Icons.description,
-                              color: Colors.white,
-                              size: 60,
-                            ),
-                            const EdgeInsets.fromLTRB(15, 13, 15, 12),
-                            "Archivos",
-                            () {},
-                            Colors.greenAccent[400]),
+                        titleLabel("Almacenamiento"),
+                        const SizedBox(height: 20),
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                fileCategory(
+                                    const Icon(
+                                      SafeSyncIcons.foursquares,
+                                      color: Colors.white,
+                                      size: 80,
+                                    ),
+                                    const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                                    "Todo",
+                                    () {}),
+                                const SizedBox(width: 12),
+                                fileCategory(
+                                    const Icon(
+                                      Icons.folder,
+                                      color: Colors.white,
+                                      size: 60,
+                                    ),
+                                    const EdgeInsets.fromLTRB(15, 13, 15, 12),
+                                    "Carpetas",
+                                    () {},
+                                    Colors.red[500]),
+                                const SizedBox(width: 12),
+                                fileCategory(
+                                    const Icon(
+                                      Icons.image_rounded,
+                                      color: Colors.white,
+                                      size: 60,
+                                    ),
+                                    const EdgeInsets.fromLTRB(15, 13, 15, 12),
+                                    "Fotos",
+                                    () {},
+                                    const Color.fromARGB(255, 228, 75, 255)),
+                                const SizedBox(width: 12),
+                                fileCategory(
+                                    const Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white,
+                                      size: 60,
+                                    ),
+                                    const EdgeInsets.fromLTRB(15, 13, 15, 12),
+                                    "Videos",
+                                    () {},
+                                    Colors.cyan[300]),
+                                const SizedBox(width: 12),
+                                fileCategory(
+                                    const Icon(
+                                      Icons.description,
+                                      color: Colors.white,
+                                      size: 60,
+                                    ),
+                                    const EdgeInsets.fromLTRB(15, 13, 15, 12),
+                                    "Archivos",
+                                    () {},
+                                    Colors.greenAccent[400]),
+                              ],
+                            )),
+                        const SizedBox(height: 30),
+                        Row(children: [
+                          titleLabel("Reciente"),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_downward_rounded,
+                              color: Color.fromRGBO(0, 81, 151, 1))
+                        ]),
+                        const SizedBox(height: 15),
+                        FutureBuilder<List<Widget>>(
+                          future: getRecentFilesWidgets(user, (file) {
+                            selectedFile.value = file;
+                            isShowingFileWidget.value = true;
+                          }),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Widget>> snapshot) {
+                            if (snapshot.hasData) {
+                              return Wrap(
+                                  runSpacing: spacing,
+                                  spacing: spacing,
+                                  children: snapshot.data!);
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            // Por defecto, muestra un loading spinner.
+                            return const CircularProgressIndicator();
+                          },
+                        ),
+                        const SizedBox(height: 15)
                       ],
-                    )),
-                const SizedBox(height: 30),
-                Row(children: [
-                  titleLabel("Reciente"),
-                  const SizedBox(width: 8),
-                  const Icon(Icons.arrow_downward_rounded,
-                      color: Color.fromRGBO(0, 81, 151, 1))
-                ]),
-                const SizedBox(height: 15),
-                FutureBuilder<List<Widget>>(
-                  future: getRecentFilesWidgets(user),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Widget>> snapshot) {
-                    if (snapshot.hasData) {
-                      return Wrap(
-                          runSpacing: spacing,
-                          spacing: spacing,
-                          children: snapshot.data!);
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    // Por defecto, muestra un loading spinner.
-                    return const CircularProgressIndicator();
-                  },
-                )
-              ],
-            ),
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
-        ],
-      ),
+        ),
+        isShowingFileWidget.value
+            ? Positioned(
+                top: 0,
+                left: 0,
+                child: Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        isShowingFileWidget.value = false;
+                      },
+                      child: Container(
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: fileOpen(
+                        file: selectedFile.value,
+                        onClose: () {
+                          isShowingFileWidget.value = false;
+                        },
+                      ),
+                    )
+                  ],
+                ))
+            : Container()
+      ],
     );
   }
 }
@@ -155,7 +197,8 @@ Future<String> downloadFile(String url, String filename) async {
   return filePath;
 }
 
-Future<List<Widget>> getRecentFilesWidgets(User user) async {
+Future<List<Widget>> getRecentFilesWidgets(
+    User user, Function(Map) onFileSelected) async {
   final recentFilesList = <Widget>[];
 
   List<Map<String, dynamic>> allFiles = [];
@@ -180,8 +223,6 @@ Future<List<Widget>> getRecentFilesWidgets(User user) async {
             'https://safesync.fly.dev/api/files/unidad/${user.userName}/$directoryName/${file.nameFile}')
         .toString();
 
-    print(filePath);
-
     final isImage = _isImageFile(file.nameFile);
     final isVideo = _isVideoFile(file.nameFile);
     final iconCard = user.shouldShowImage.value
@@ -196,26 +237,28 @@ Future<List<Widget>> getRecentFilesWidgets(User user) async {
       if (isVideo) {
         final thumbnailData = await _generateVideoThumbnail(localFilePath);
         if (thumbnailData != null) {
-          imageCard = Image.memory(thumbnailData, width: 120, height: 74);
+          imageCard = Image.memory(thumbnailData, width: 130, height: 84);
         }
       } else if (isImage) {
         final compressedImageData = await _compressImage(localFilePath);
         if (compressedImageData != null) {
-          imageCard = Image.memory(compressedImageData, width: 120, height: 74);
+          imageCard = Image.memory(compressedImageData, width: 130, height: 84);
         }
       }
     }
 
     final titleCard = file.nameFile;
-    final fileWeight = "4 MB";
+    final dateFile = getDateFile(file.date);
+    final weight = "4 MB";
 
     recentFilesList.add(
       recentFiles(
-        iconCard: iconCard,
-        imageCard: imageCard,
-        titleCard: titleCard,
-        fileWeight: fileWeight,
-      ),
+          iconCard: iconCard,
+          imageCard: imageCard,
+          titleCard: titleCard,
+          dateCard: dateFile,
+          weightCard: weight,
+          onTap: () => onFileSelected({'file': file, 'filePath': filePath})),
     );
   }
 
@@ -238,7 +281,7 @@ Future<Uint8List?> _generateVideoThumbnail(String videoPath) async {
   final result = await VideoThumbnail.thumbnailData(
     video: videoPath,
     imageFormat: ImageFormat.JPEG,
-    maxWidth: 128,
+    maxWidth: 130,
     quality: 25,
   );
   return result;
@@ -247,9 +290,35 @@ Future<Uint8List?> _generateVideoThumbnail(String videoPath) async {
 Future<Uint8List?> _compressImage(String imagePath) async {
   final result = await FlutterImageCompress.compressWithFile(
     imagePath,
-    minHeight: 74,
-    minWidth: 120,
+    minHeight: 84,
+    minWidth: 130,
     quality: 65,
   );
   return result;
+}
+
+String getDateFile(String date) {
+  String apiDateString = date
+      .replaceRange(4, 5, "-")
+      .replaceRange(7, 8, "-")
+      .replaceRange(10, 11, "T")
+      .replaceRange(13, 14, ":")
+      .replaceRange(16, 17, ":");
+  DateTime apiDate = DateTime.parse(apiDateString);
+  DateTime now = DateTime.now();
+  Duration difference = now.difference(apiDate);
+
+  if (difference.inDays == 0) {
+    return "Hoy";
+  } else if (difference.inDays == 1) {
+    return "Ayer";
+  } else if (difference.inDays < 30) {
+    return "Hace ${difference.inDays} días";
+  } else if (difference.inDays < 365) {
+    int months = difference.inDays ~/ 30;
+    return "Hace $months meses";
+  } else {
+    int years = difference.inDays ~/ 365;
+    return "Hace $years años";
+  }
 }
