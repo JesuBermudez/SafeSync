@@ -44,26 +44,31 @@ class AppScreen extends StatelessWidget {
 class AppContent extends StatelessWidget {
   AppContent({super.key});
 
+  var scaffoldBackground = Rx<Color>(const Color.fromRGBO(177, 224, 255, 1));
   var currentIndex = 2.obs;
-  List<Widget> pages = [
-    Container(),
-    Container(),
-    HomePage(),
-    Container(),
-    IconButton(
-        icon: const Icon(Icons.logout_rounded),
-        onPressed: () => Get.offNamed("/login"))
-  ];
 
   @override
   Widget build(BuildContext context) {
     const inactiveColor = Color.fromRGBO(148, 167, 190, 1);
     const activeColor = Color.fromRGBO(2, 103, 212, 1);
+
+    List<Widget> pages = [
+      Container(),
+      Container(),
+      HomePage((Color color) {
+        scaffoldBackground.value = color;
+      }),
+      Container(),
+      IconButton(
+          icon: const Icon(Icons.logout_rounded),
+          onPressed: () => Get.offNamed("/login"))
+    ];
+
     return Obx(() {
       return Scaffold(
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
-        backgroundColor: const Color.fromRGBO(177, 224, 255, 1),
+        backgroundColor: scaffoldBackground.value,
         bottomNavigationBar: Container(
             height: 60,
             clipBehavior: Clip.hardEdge,

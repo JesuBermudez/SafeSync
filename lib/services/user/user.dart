@@ -22,7 +22,6 @@ Future<String> getUser() async {
 
   try {
     Map<String, dynamic> sucess = await apiService.getUser(userId!, userToken!);
-    print(sucess);
 
     if (!sucess.containsKey("Error")) {
       user.jsonFromUser(sucess);

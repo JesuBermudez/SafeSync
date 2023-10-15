@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String apiUrl = 'https://safesync.fly.dev/api/users';
+  static const String apiUrl =
+      'https://api-drivehub-production.up.railway.app/api/users';
 
   Future<Map<String, dynamic>> getUser(String id, String token) async {
     try {

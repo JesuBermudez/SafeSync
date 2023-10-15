@@ -66,9 +66,15 @@ class Directories extends GetxController {
 class Files {
   String nameFile = "";
   String date = "";
+  double size = 0;
 
   Files(Map<String, dynamic> json) {
     nameFile = json["nameFile"];
     date = json["Date"];
+    size = json["size"] / (1024 * 2);
   }
+
+  String get namefile => nameFile;
+  String get datefile => DateTime.parse(date).toString();
+  double get sizefile => size;
 }

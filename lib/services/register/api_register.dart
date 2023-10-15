@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
 
 class ApiService {
-  static const String apiUrl = 'https://safesync.fly.dev/api/users/create';
+  static const String apiUrl =
+      'https://api-drivehub-production.up.railway.app/api/users/create';
 
   Future<String> registerUser() async {
     User user = Get.find();

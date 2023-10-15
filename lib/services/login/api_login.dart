@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
 
 class ApiService {
-  static const String apiUrl = 'https://safesync.fly.dev/api/auth/login';
+  static const String apiUrl =
+      'https://api-drivehub-production.up.railway.app/api/auth/login';
 
   Future<Map<String, dynamic>> login() async {
     User user = Get.find();
@@ -26,7 +27,6 @@ class ApiService {
           ? {'Error': data['error']}
           : {'Error': 'Error desconocido'};
     } catch (e) {
-      print(e);
       return {'Error': 'Error al iniciar sesión'};
     }
   }

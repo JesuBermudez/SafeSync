@@ -44,22 +44,20 @@ Widget recentFiles(
                 Container(
                   alignment: Alignment.center,
                   width: 130,
-                  child: Text(
-                    '$titleCard',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: const TextStyle(
-                        color: Color.fromRGBO(55, 81, 115, 1),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500),
+                  child: Column(
+                    children: [
+                      Text(
+                        '$titleCard',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: const TextStyle(
+                            color: Color.fromRGBO(55, 81, 115, 1),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      buildVariableText('$dateCard', '$weightCard'),
+                    ],
                   ),
-                ),
-                Text(
-                  '$dateCard - $weightCard',
-                  style: const TextStyle(
-                      color: Color.fromRGBO(88, 115, 150, 0.8),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -102,5 +100,44 @@ Widget recentFiles(
         ],
       ),
     ),
+  );
+}
+
+Widget buildVariableText(String text1, String text2) {
+  return LayoutBuilder(
+    builder: (BuildContext context, BoxConstraints constraints) {
+      const style = TextStyle(
+          color: Color.fromRGBO(88, 115, 150, 0.8),
+          fontSize: 12,
+          fontWeight: FontWeight.w600);
+      final span1 = TextSpan(text: text1, style: style);
+      final span2 = TextSpan(text: text2, style: style);
+      const dash = TextSpan(text: ' - ', style: style);
+
+      final tp1 = TextPainter(text: span1, textDirection: TextDirection.ltr);
+      tp1.layout();
+      final tp2 = TextPainter(text: span2, textDirection: TextDirection.ltr);
+      tp2.layout();
+      final tpDash = TextPainter(text: dash, textDirection: TextDirection.ltr);
+      tpDash.layout();
+
+      if (tp1.width + tpDash.width + tp2.width <= constraints.maxWidth) {
+        // Si las dos variables y el guión caben en una línea
+        return Text.rich(
+          TextSpan(
+            children: [span1, dash, span2],
+            style: style,
+          ),
+        );
+      } else {
+        // Si no caben en una línea
+        return Column(
+          children: [
+            Text(text1, style: style),
+            Text(text2, style: style),
+          ],
+        );
+      }
+    },
   );
 }
