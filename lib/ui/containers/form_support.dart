@@ -37,7 +37,6 @@ class FormSupport extends StatelessWidget {
           _emailController.text = '';
           _subjectController.text = '';
           _messageController.text = '';
-          support.setSend = true;
         })
       ],
     );
