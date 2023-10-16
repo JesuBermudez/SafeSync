@@ -106,11 +106,14 @@ createEmail({required TextEditingController controller}) {
             controller: controller,
             decoration: InputDecoration(
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0)),
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
                 enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                  borderSide: BorderSide(
+                    color: Color.fromRGBO(200, 235, 255, 1),
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
                 hintText: 'Correo...',
                 hintStyle:
                     const TextStyle(color: Color.fromRGBO(176, 199, 212, 1)),
@@ -123,5 +126,31 @@ createEmail({required TextEditingController controller}) {
             },
           ));
     },
+  );
+}
+
+createSubject({required TextEditingController controller}) {
+  return TextField(
+    controller: controller,
+    decoration: const InputDecoration(border: UnderlineInputBorder()),
+  );
+}
+
+createTextArea({required TextEditingController controller}) {
+  return TextField(
+    controller: controller,
+    maxLines: 6,
+    minLines: 4,
+    keyboardType: TextInputType.multiline,
+    decoration: const InputDecoration(border: UnderlineInputBorder()),
+  );
+}
+
+createSendEmail({required TextEditingController controller}) {
+  return TextField(
+    controller: controller,
+    decoration: const InputDecoration(border: UnderlineInputBorder()),
+    keyboardType: TextInputType.emailAddress,
+    keyboardAppearance: Brightness.dark,
   );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/pages/home_page.dart';
 import 'package:safesync/pages/launch_page.dart';
+import 'package:safesync/pages/page_support.dart';
 import 'package:safesync/services/user/user.dart';
 import '../models/user/user.dart';
 
@@ -58,7 +59,7 @@ class AppContent extends StatelessWidget {
       HomePage((Color color) {
         scaffoldBackground.value = color;
       }),
-      Container(),
+      const SupportPage(),
       IconButton(
           icon: const Icon(Icons.logout_rounded),
           onPressed: () => Get.offNamed("/login"))

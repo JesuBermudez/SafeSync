@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safesync/services/login/login.dart';
 import 'package:safesync/services/register/register.dart';
+import 'package:safesync/services/support/support.dart';
 
 createButton(
     {required String text, VoidCallback? registerd, VoidCallback? logind}) {
@@ -46,5 +47,16 @@ createButton(
         ),
       ),
     ),
+  );
+}
+
+sendButton({required VoidCallback send}) {
+  return ElevatedButton.icon(
+    onPressed: () {
+      send();
+      support();
+    },
+    icon: const Icon(Icons.send_rounded),
+    label: const Text('Enviar'),
   );
 }
