@@ -23,19 +23,22 @@ class FormSupport extends StatelessWidget {
         createSendEmail(controller: _emailController),
         const SizedBox(height: 20),
         const Text('Asunto:', style: TextStyle(fontWeight: FontWeight.w700)),
-        const SizedBox(height: 20),
         createSubject(controller: _subjectController),
         const SizedBox(height: 20),
         const Text('Mensaje:', style: TextStyle(fontWeight: FontWeight.w700)),
         createTextArea(controller: _messageController),
         SizedBox(height: Get.height * 0.1),
-        sendButton(
-          send: () => support.dataEmail(
+        sendButton(send: () {
+          support.dataEmail(
             emailUser: _emailController.text,
             subjectUser: _subjectController.text,
             messageUser: _messageController.text,
-          ),
-        )
+          );
+          _emailController.text = '';
+          _subjectController.text = '';
+          _messageController.text = '';
+          support.setSend = true;
+        })
       ],
     );
   }
