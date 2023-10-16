@@ -148,7 +148,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           isShowingFileWidget.value
-              ? fileOpen(
+              ? FileOpen(
                   // ignore: invalid_use_of_protected_member
                   file: selectedFile.value,
                   onClose: () {
@@ -240,7 +240,13 @@ Future<List<Widget>> getRecentFilesWidgets(
           titleCard: titleCard,
           dateCard: dateFile,
           weightCard: weight,
-          onTap: () => onFileSelected({'file': file, 'filePath': filePath})),
+          onTap: () => onFileSelected({
+                'file': file,
+                'filePath': filePath,
+                "icon": iconCard,
+                "isImage": isImage,
+                "isVideo": isVideo
+              })),
     );
   }
 

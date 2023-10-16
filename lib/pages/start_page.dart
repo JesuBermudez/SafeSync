@@ -72,7 +72,7 @@ class StartPage extends StatelessWidget {
                       Colors.transparent,
                     ),
                     shadowColor: MaterialStateProperty.all(
-                      Color.fromARGB(123, 0, 110, 255),
+                      const Color.fromARGB(123, 0, 110, 255),
                     ),
                     fixedSize: MaterialStateProperty.all(
                       const Size(190, 60),
