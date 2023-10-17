@@ -249,6 +249,7 @@ Future<List<Widget>> getRecentFilesWidgets(
           titleCard: titleCard,
           dateCard: dateFile,
           weightCard: weight,
+          folderName: directoryName,
           onTap: () => onFileSelected({
                 'file': file,
                 'filePath': filePath,

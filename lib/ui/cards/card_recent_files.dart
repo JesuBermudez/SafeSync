@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:safesync/services/file/file.dart';
+import 'package:share_plus/share_plus.dart';
 
 Widget recentFiles(
     {Icon? iconCard,
@@ -6,6 +8,7 @@ Widget recentFiles(
     String? titleCard,
     String? dateCard,
     String? weightCard,
+    String? folderName,
     Function()? onTap}) {
   return GestureDetector(
     onTap: onTap,
@@ -76,23 +79,24 @@ Widget recentFiles(
                 icon: const Icon(
                   Icons.more_horiz,
                   color: Color.fromRGBO(54, 93, 125, 1),
-                ), // Este es el ícono de los 3 puntos
-                onSelected: (String result) {
-                  // Aquí puedes manejar la opción seleccionada
+                ),
+                onSelected: (String result) async {
+                  if (result == 'Compartir link') {
+                    String path = await shareFile('$titleCard', '$folderName');
+                    if (path.isNotEmpty) {
+                      Share.share(
+                          'SafeSync App\n\nTe comparto mi archivo:\n $titleCard $path');
+                    }
+                  }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                   const PopupMenuItem<String>(
-                    value: 'Abrir con',
-                    child: Text('Abrir con'),
-                  ),
+                      value: 'Abrir con', child: Text('Abrir con')),
                   const PopupMenuItem<String>(
-                    value: 'Compartir',
-                    child: Text('Compartir'),
-                  ),
+                      value: 'Compartir link', child: Text('Compartir link')),
+                  const PopupMenuItem(value: 'QR', child: Text('Mostrar QR')),
                   const PopupMenuItem<String>(
-                    value: 'Borrar',
-                    child: Text('Borrar'),
-                  ),
+                      value: 'Borrar', child: Text('Borrar')),
                 ],
               ),
             ),

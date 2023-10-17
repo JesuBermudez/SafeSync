@@ -25,7 +25,7 @@ void directory(String folderName) async {
 
   final userToken = prefs.getString('userToken');
 
-  ApiSupport apiService = ApiSupport();
+  ApiDirectory apiService = ApiDirectory();
 
   try {
     String sucess = await apiService.createDirectory(

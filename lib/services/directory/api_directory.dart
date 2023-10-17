@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:safesync/models/user/user.dart';
 
-class ApiSupport {
+class ApiDirectory {
   static const String url =
       'https://api-drivehub-production.up.railway.app/api/users/createDirectory';
 
