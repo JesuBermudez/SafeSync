@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:safesync/ui/appBars/upload_appbar.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:open_file/open_file.dart';
 
@@ -17,40 +18,9 @@ class FileOpen extends StatelessWidget {
 
   ValueNotifier<double?> width = ValueNotifier<double?>(null);
   ValueNotifier<double?> height = ValueNotifier<double?>(null);
+  var widthObs = 0.0.obs;
   var localPath = "".obs;
   var isExpanded = false.obs;
-
-  Future<String> downloadFile(String url, String filename) async {
-    final directory = await getExternalStorageDirectory();
-    if (directory == null) {
-      return "";
-    }
-    var filePath = '${directory.path}/$filename';
-    var file = File(filePath);
-
-    if (!file.existsSync()) {
-      // Descargar el archivo
-      final response = await http.get(Uri.parse(url));
-      await file.writeAsBytes(response.bodyBytes);
-    }
-    localPath.value = filePath;
-
-    return filePath;
-  }
-
-  Future<Uint8List?> fetchThumbnail(String videoPath) async {
-    try {
-      final uint8list = await VideoThumbnail.thumbnailData(
-        video: videoPath,
-        imageFormat: ImageFormat.PNG,
-        quality: 100,
-      );
-
-      return uint8list;
-    } catch (e) {
-      return null;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,51 +40,14 @@ class FileOpen extends StatelessWidget {
         ),
         // AppBar
         Positioned(
-          top: 0,
-          child: Container(
-            width: Get.width,
-            padding: const EdgeInsets.symmetric(vertical: 3.5),
-            decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-              BoxShadow(
-                  color: Colors.black38,
-                  offset: Offset(0, 1),
-                  blurRadius: 10,
-                  spreadRadius: 5),
-            ]),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                IconButton(
-                    padding: const EdgeInsets.fromLTRB(3, 1, 3, 1),
-                    onPressed: () async {
-                      final File file = File(localPath.value);
-                      if (await file.exists()) {
-                        await file.delete();
-                      }
-                      onClose();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_rounded,
-                      size: 24,
-                      color: Colors.blueGrey.shade900,
-                    )),
-                const SizedBox(width: 3),
-                Flexible(
-                  child: Text(
-                    "${file['file'].namefile}",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                        fontSize: 21,
-                        color: Colors.grey.shade700,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                const SizedBox(width: 5)
-              ],
-            ),
-          ),
-        ),
+            top: 0,
+            child: uploadAppBar("${file['file'].namefile}", () async {
+              final File file = File(localPath.value);
+              if (await file.exists()) {
+                await file.delete();
+              }
+              onClose();
+            })),
         // File
         Obx(
           () => Padding(
@@ -133,10 +66,10 @@ class FileOpen extends StatelessWidget {
                       child: Stack(
                         children: [
                           Padding(
-                              padding:
-                                  (localPath.value != "" || width.value != null)
-                                      ? const EdgeInsets.only(bottom: 50)
-                                      : EdgeInsets.zero,
+                              padding: (localPath.value != "" ||
+                                      widthObs.value != 0.0)
+                                  ? const EdgeInsets.only(bottom: 48)
+                                  : EdgeInsets.zero,
                               child: (file["isVideo"] || file["isImage"])
                                   ? fileThumbnailWidget()
                                   : FutureBuilder<String?>(
@@ -162,15 +95,24 @@ class FileOpen extends StatelessWidget {
                                               onPressed: () =>
                                                   openFile(localPath.value),
                                               icon: file["icon"],
-                                              iconSize: 170,
-                                              padding: const EdgeInsets.all(35),
+                                              iconSize: 180,
+                                              padding: const EdgeInsets.all(40),
                                             );
                                           }
                                         } else {
                                           return const Padding(
                                               padding: EdgeInsets.all(15.0),
-                                              child:
-                                                  CircularProgressIndicator());
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  CircularProgressIndicator(),
+                                                  Icon(
+                                                    Icons.download,
+                                                    color: Colors.blue,
+                                                    size: 28,
+                                                  )
+                                                ],
+                                              ));
                                         }
                                       },
                                     )),
@@ -188,16 +130,58 @@ class FileOpen extends StatelessWidget {
     );
   }
 
+  Future<String> downloadFile(String url, String filename) async {
+    final directory = await getExternalStorageDirectory();
+    if (directory == null) {
+      return "";
+    }
+    var filePath = '${directory.path}/$filename';
+    var file = File(filePath);
+
+    if (!file.existsSync()) {
+      // Descargar el archivo
+      try {
+        final response = await http.get(Uri.parse(url));
+        await file.writeAsBytes(response.bodyBytes);
+      } catch (e) {
+        showDialog(
+            context: Get.context!,
+            builder: (_) => AlertDialog(
+                  title: const Text("Error"),
+                  content: Text('Error al abrir el archivo: $filename'),
+                ));
+        Get.offNamed("/login");
+      }
+    }
+    localPath.value = filePath;
+
+    return filePath;
+  }
+
+  Future<Uint8List?> fetchThumbnail(String videoPath) async {
+    try {
+      final uint8list = await VideoThumbnail.thumbnailData(
+        video: videoPath,
+        imageFormat: ImageFormat.PNG,
+        quality: 100,
+      );
+
+      return uint8list;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Widget animatedContainerWidget() {
     Timer(const Duration(milliseconds: 100), () {});
-    if (localPath.value != "" && width.value != null) {
+    if (localPath.value != "") {
       return AnimatedContainer(
         clipBehavior: Clip.hardEdge,
         duration: const Duration(milliseconds: 150),
-        width: getWidth(width.value),
-        height: isExpanded.value ? 150 : 50,
+        width: widthObs.value != 0.0 ? getWidth(widthObs.value) : 260,
+        height: isExpanded.value ? 150 : 54,
         decoration: BoxDecoration(
-            color: Colors.blue.shade50,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(8),
             boxShadow: const [
               BoxShadow(
@@ -208,53 +192,19 @@ class FileOpen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  isExpanded.value ? Icons.arrow_downward : Icons.arrow_upward,
-                  color: const Color.fromRGBO(2, 103, 212, 1),
+              SizedBox(
+                width: double.infinity,
+                child: IconButton(
+                  icon: Icon(
+                      isExpanded.value
+                          ? Icons.keyboard_arrow_down_rounded
+                          : Icons.keyboard_arrow_up_rounded,
+                      color: const Color.fromRGBO(2, 103, 212, 1)),
+                  iconSize: 34,
+                  onPressed: () {
+                    isExpanded.value = !isExpanded.value;
+                  },
                 ),
-                iconSize: 34,
-                onPressed: () {
-                  isExpanded.value = !isExpanded.value;
-                },
-              ),
-              if (isExpanded.value) ...[
-                const Text('Abrir con'),
-                const Text('Compartir'),
-                const Text('Eliminar'),
-              ]
-            ],
-          ),
-        ),
-      );
-    } else if (localPath.value != "") {
-      return AnimatedContainer(
-        clipBehavior: Clip.hardEdge,
-        duration: const Duration(milliseconds: 150),
-        width: 240,
-        height: isExpanded.value ? 150 : 50,
-        decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color.fromARGB(90, 96, 125, 139),
-                  blurRadius: 4,
-                  spreadRadius: 4)
-            ]),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                    isExpanded.value
-                        ? Icons.arrow_downward
-                        : Icons.arrow_upward,
-                    color: const Color.fromRGBO(2, 103, 212, 1)),
-                iconSize: 34,
-                onPressed: () {
-                  isExpanded.value = !isExpanded.value;
-                },
               ),
               if (isExpanded.value) ...[
                 const Text('Abrir con'),
@@ -307,8 +257,12 @@ class FileOpen extends StatelessWidget {
                           .addListener(
                         ImageStreamListener(
                           (ImageInfo info, bool _) {
-                            width.value = info.image.width.toDouble();
-                            height.value = info.image.height.toDouble();
+                            width.value = getWidth(info.image.width.toDouble());
+                            widthObs.value =
+                                getWidth(info.image.width.toDouble());
+                            height.value = getHeight(
+                                info.image.height.toDouble(),
+                                info.image.width.toDouble());
                           },
                         ),
                       );
@@ -320,8 +274,8 @@ class FileOpen extends StatelessWidget {
                           if (widthValue != null && height.value != null) {
                             return Container(
                               color: Colors.grey.shade200,
-                              width: getWidth(widthValue),
-                              height: getHeight(height.value),
+                              width: widthValue,
+                              height: getHeight(height.value, widthObs.value),
                               child: Stack(
                                 children: [
                                   Center(
@@ -365,7 +319,17 @@ class FileOpen extends StatelessWidget {
           } else {
             return const Padding(
                 padding: EdgeInsets.all(15.0),
-                child: CircularProgressIndicator());
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Icon(
+                      Icons.download,
+                      color: Colors.blue,
+                      size: 28,
+                    )
+                  ],
+                ));
           }
         },
       );
@@ -374,8 +338,10 @@ class FileOpen extends StatelessWidget {
       image.image.resolve(const ImageConfiguration()).addListener(
         ImageStreamListener(
           (ImageInfo info, bool _) {
-            width.value = info.image.width.toDouble();
-            height.value = info.image.height.toDouble();
+            width.value = getWidth(info.image.width.toDouble());
+            widthObs.value = getWidth(info.image.width.toDouble());
+            height.value = getHeight(
+                info.image.height.toDouble(), info.image.width.toDouble());
           },
         ),
       );
@@ -398,8 +364,8 @@ class FileOpen extends StatelessWidget {
                     if (widthValue != null && height.value != null) {
                       return Container(
                           color: Colors.grey.shade200,
-                          width: getWidth(widthValue),
-                          height: getHeight(height.value),
+                          width: widthValue,
+                          height: height.value,
                           child: Center(
                               child: FittedBox(
                                   fit: BoxFit.contain,
@@ -425,7 +391,17 @@ class FileOpen extends StatelessWidget {
             } else {
               return const Padding(
                 padding: EdgeInsets.all(15.0),
-                child: CircularProgressIndicator(),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    Icon(
+                      Icons.download,
+                      color: Colors.blue,
+                      size: 28,
+                    )
+                  ],
+                ),
               );
             }
           });
@@ -435,11 +411,23 @@ class FileOpen extends StatelessWidget {
   }
 }
 
-double getWidth(double? width) =>
-    width! > Get.width ? (Get.width > 500 ? 500 : Get.width) : width;
+double getWidth(double? width) => width! > Get.width
+    ? (Get.width > 500 ? 500 : Get.width)
+    : (width < 200 ? width + (200 - width) : width);
 
-double getHeight(double? height) =>
-    height! > Get.height - 200 ? height / 3 : height;
+double getHeight(double? height, double? width) {
+  double newWidth = getWidth(width);
+  if (newWidth != width) {
+    // Si el ancho fue ajustado, ajustar la altura proporcionalmente
+    double aspectRatio = height! / width!;
+    return (newWidth * aspectRatio > 100 ? newWidth * aspectRatio : 100);
+  } else {
+    // Si el ancho no fue ajustado
+    return height! > Get.height - 200
+        ? height / 3
+        : (height < 200 ? height + (200 - height) : height);
+  }
+}
 
 void openFile(String pathToFile) async {
   if (await Permission.manageExternalStorage.request().isGranted) {

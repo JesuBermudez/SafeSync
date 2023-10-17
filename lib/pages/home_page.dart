@@ -173,8 +173,12 @@ Future<String> downloadFile(String url, String filename) async {
 
   if (!file.existsSync()) {
     // Si el archivo no existe, descargarlo
-    final response = await http.get(Uri.parse(url));
-    await file.writeAsBytes(response.bodyBytes);
+    try {
+      final response = await http.get(Uri.parse(url));
+      await file.writeAsBytes(response.bodyBytes);
+    } catch (e) {
+      return "";
+    }
   }
 
   return filePath;
@@ -217,12 +221,17 @@ Future<List<Widget>> getRecentFilesWidgets(
         Uri.parse("$apiPath/$previewImages/$fileNamePreview").toString();
 
     if (user.shouldShowImage.value && (isImage || isVideo)) {
-      String localFilePath = await downloadFile(imagePreview, fileNamePreview);
+      try {
+        String localFilePath =
+            await downloadFile(imagePreview, fileNamePreview);
 
-      if (isVideo) {
-        imageCard = Image.file(File(localFilePath), width: 130, height: 84);
-      } else if (isImage) {
-        imageCard = Image.file(File(localFilePath), width: 130, height: 84);
+        if (isVideo) {
+          imageCard = Image.file(File(localFilePath), width: 130, height: 84);
+        } else if (isImage) {
+          imageCard = Image.file(File(localFilePath), width: 130, height: 84);
+        }
+      } catch (e) {
+        imageCard = null;
       }
     }
 
@@ -285,17 +294,17 @@ String getDateFile(String date) {
   }
 }
 
-String formatFileSize(double sizeInBytes) {
-  if (sizeInBytes < 1024) {
-    return '${sizeInBytes.toStringAsFixed(1)} bytes';
-  } else if (sizeInBytes < 1024 * 1024) {
-    double sizeInKb = sizeInBytes / 1024;
+String formatFileSize(double sizeInKb) {
+  if (sizeInKb < 0) {
+    double sizeInB = sizeInKb * 1024;
+    return '${sizeInB.toStringAsFixed(1)} bytes';
+  } else if (sizeInKb < 1024) {
     return '${sizeInKb.toStringAsFixed(1)} KB';
-  } else if (sizeInBytes < 1024 * 1024 * 1024) {
-    double sizeInMb = sizeInBytes / (1024 * 1024);
+  } else if (sizeInKb < 1024 * 1024) {
+    double sizeInMb = sizeInKb / (1024);
     return '${sizeInMb.toStringAsFixed(1)} MB';
   } else {
-    double sizeInGb = sizeInBytes / (1024 * 1024 * 1024);
+    double sizeInGb = sizeInKb / (1024 * 1024);
     return '${sizeInGb.toStringAsFixed(1)} GB';
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safesync/pages/app_screen.dart';
 import 'package:safesync/pages/login_page.dart';
-import 'package:safesync/pages/page_support.dart';
+import 'package:safesync/pages/support_page.dart';
 import 'package:safesync/pages/register_page.dart';
 import 'package:safesync/pages/start_page.dart';
 

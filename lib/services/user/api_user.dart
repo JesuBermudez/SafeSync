@@ -21,8 +21,6 @@ class ApiService {
         return data['user'];
       }
 
-      print(data);
-
       return {'Error': 'Error'};
     } catch (e) {
       return {'Error': 'Error'};

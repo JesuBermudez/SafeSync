@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:safesync/services/login/login.dart';
 import 'package:safesync/services/register/register.dart';
-import 'package:safesync/services/support/support.dart';
+
+Widget simpleButton(Icon icon, String title, VoidCallback onTap) {
+  return ElevatedButton(
+      onPressed: onTap,
+      style: ButtonStyle(
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+        padding:
+            const MaterialStatePropertyAll(EdgeInsets.fromLTRB(8, 10, 10, 10)),
+        backgroundColor: const MaterialStatePropertyAll(Colors.white),
+      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        icon,
+        const SizedBox(width: 5),
+        Text(title, style: TextStyle(color: Colors.blueGrey.shade700))
+      ]));
+}
 
 createButton(
     {required String text, VoidCallback? registerd, VoidCallback? logind}) {
@@ -50,13 +69,30 @@ createButton(
   );
 }
 
-sendButton({required VoidCallback send}) {
+sendButton(
+    {required Icon icon, required String text, required VoidCallback send}) {
   return ElevatedButton.icon(
-    onPressed: () {
-      send();
-      support();
-    },
-    icon: const Icon(Icons.send_rounded),
-    label: const Text('Enviar'),
+    onPressed: send,
+    icon: icon,
+    label: Text(
+      text,
+      style: const TextStyle(fontSize: 18),
+    ),
+  );
+}
+
+Widget uploadFileButton({required VoidCallback onTap}) {
+  return ElevatedButton(
+    onPressed: onTap,
+    style: ElevatedButton.styleFrom(
+      shape: const CircleBorder(),
+      padding: const EdgeInsets.all(10),
+      backgroundColor: Colors.deepPurple,
+    ),
+    child: const Icon(
+      Icons.add_rounded,
+      color: Colors.white,
+      size: 40,
+    ),
   );
 }

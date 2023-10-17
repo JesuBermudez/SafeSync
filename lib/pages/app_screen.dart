@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/pages/files_page.dart';
 import 'package:safesync/pages/home_page.dart';
 import 'package:safesync/pages/launch_page.dart';
-import 'package:safesync/pages/page_support.dart';
+import 'package:safesync/pages/support_page.dart';
 import 'package:safesync/services/user/user.dart';
 import '../models/user/user.dart';
 
@@ -55,7 +56,7 @@ class AppContent extends StatelessWidget {
 
     List<Widget> pages = [
       Container(),
-      Container(),
+      FilesPage(),
       HomePage((Color color) {
         scaffoldBackground.value = color;
       }),
