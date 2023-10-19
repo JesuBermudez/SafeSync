@@ -1,7 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/models/user/user.dart';
 import 'package:safesync/services/directory/directory.dart';
+import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/appBars/upload_appbar.dart';
 import 'package:safesync/ui/buttons/buttons_elevations.dart';
 import 'package:safesync/ui/labels/title_label.dart';
@@ -11,6 +13,8 @@ Widget uploadContainer(
     String? folderName,
     required VoidCallback onClose}) {
   TextEditingController controller = TextEditingController(text: null);
+  String filePath = "";
+  User user = Get.find();
 
   return Stack(children: [
     GestureDetector(
@@ -52,6 +56,8 @@ Widget uploadContainer(
                                 return const SizedBox();
                               } else {
                                 controller.text = snapshot.data!["name"] ?? "";
+                                filePath = snapshot.data!["path"] ?? "";
+                                print(filePath);
                                 return getInput(title, controller);
                               }
                             } else {
@@ -67,7 +73,14 @@ Widget uploadContainer(
                           icon: const Icon(Icons.upload_rounded, size: 26),
                           text: title.split(" ")[0],
                           send: () {
-                            directory(controller.text);
+                            title == "Subir archivo"
+                                ? uploadFile(
+                                    controller.text,
+                                    folderName == ""
+                                        ? "Default${user.user}"
+                                        : folderName!,
+                                    filePath)
+                                : directory(controller.text);
                             onClose();
                           }))
                 ])))

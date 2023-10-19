@@ -85,7 +85,7 @@ Widget recentFiles(
                     String path = await shareFile('$titleCard', '$folderName');
                     if (path.isNotEmpty) {
                       Share.share(
-                          'SafeSync App\n\nTe comparto mi archivo:\nlink: $titleCard $path');
+                          'SafeSync App\n\nTe comparto mi archivo: $titleCard\nlink: $path');
                     }
                   }
                 },

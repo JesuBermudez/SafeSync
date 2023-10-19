@@ -47,6 +47,7 @@ dependencies:
   permission_handler: ^11.0.1
   file_picker: ^6.0.0
   share_plus: ^7.2.1
+  dio: ^5.3.3
 
 
 dev_dependencies:
