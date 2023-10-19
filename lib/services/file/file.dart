@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
 import 'package:safesync/services/file/api_file.dart';
-import 'package:safesync/services/user/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> shareFile(String fileName, String folderName) async {
@@ -68,8 +67,6 @@ void uploadFile(String fileName, String folderName, String filePath) async {
         token: userToken);
     Navigator.pop(Get.context!);
 
-    print(sucess.containsKey("_id"));
-
     if (sucess.containsKey("_id")) {
       showDialog(
         context: Get.context!,
@@ -91,7 +88,6 @@ void uploadFile(String fileName, String folderName, String filePath) async {
     }
   } catch (e) {
     Navigator.pop(Get.context!);
-    print(e);
     showDialog(
       context: Get.context!,
       builder: (_) => const AlertDialog(

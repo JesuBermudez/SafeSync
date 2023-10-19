@@ -57,7 +57,6 @@ Widget uploadContainer(
                               } else {
                                 controller.text = snapshot.data!["name"] ?? "";
                                 filePath = snapshot.data!["path"] ?? "";
-                                print(filePath);
                                 return getInput(title, controller);
                               }
                             } else {
