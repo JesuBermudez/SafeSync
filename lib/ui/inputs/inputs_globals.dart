@@ -122,7 +122,7 @@ createEmail({required TextEditingController controller}) {
                 suffixText: sufix.value == "" ? null : sufix.value),
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) {
-              sufix.value = controller.text.contains("@") ? "" : "@gmail.com";
+              sufix.value = controller.text.contains("@") ? "" : "@example.com";
             },
           ));
     },

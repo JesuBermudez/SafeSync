@@ -26,13 +26,8 @@ void register() async {
     context: Get.context!,
     barrierDismissible: false,
     builder: (_) => const AlertDialog(
-        content: SizedBox(
-      width: 10,
-      height: 120,
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.transparent,
-      ),
-    )),
+      content: Center(child: CircularProgressIndicator()),
+    ),
   );
 
   ApiService apiService = ApiService();

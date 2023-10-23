@@ -4,7 +4,8 @@ import 'package:safesync/models/user/user.dart';
 import 'package:safesync/services/file/api_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<String> shareFile(String fileName, String folderName) async {
+Future<Map<String, dynamic>> shareFile(
+    String fileName, String folderName) async {
   final prefs = await SharedPreferences.getInstance();
 
   // Show loading indicator
@@ -17,11 +18,11 @@ Future<String> shareFile(String fileName, String folderName) async {
   ApiFile apiService = ApiFile();
 
   try {
-    String sucess = await apiService.shareFile(
+    Map<String, dynamic> sucess = await apiService.shareFile(
         fileName: fileName, folderName: folderName, token: userToken);
     Navigator.pop(Get.context!);
 
-    if (sucess == 'Error al compartir.') {
+    if (!sucess.containsKey("link")) {
       showDialog(
         context: Get.context!,
         builder: (_) => const AlertDialog(
@@ -29,7 +30,7 @@ Future<String> shareFile(String fileName, String folderName) async {
           content: Text('No se pudo compartir el archivo.'),
         ),
       );
-      return "";
+      return {};
     }
 
     return sucess;
@@ -42,7 +43,7 @@ Future<String> shareFile(String fileName, String folderName) async {
         content: Text('No se pudo compartir el archivo.'),
       ),
     );
-    return "";
+    return {};
   }
 }
 

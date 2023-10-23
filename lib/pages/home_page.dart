@@ -56,54 +56,39 @@ class HomePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   fileCategory(
-                                      const Icon(
-                                        SafeSyncIcons.foursquares,
-                                        color: Colors.white,
-                                        size: 80,
-                                      ),
+                                      const Icon(SafeSyncIcons.foursquares,
+                                          color: Colors.white, size: 80),
                                       const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                       "Todo",
                                       () {}),
                                   const SizedBox(width: 12),
                                   fileCategory(
-                                      const Icon(
-                                        Icons.folder,
-                                        color: Colors.white,
-                                        size: 60,
-                                      ),
+                                      const Icon(Icons.folder,
+                                          color: Colors.white, size: 60),
                                       const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                       "Carpetas",
                                       () {},
                                       Colors.red[500]),
                                   const SizedBox(width: 12),
                                   fileCategory(
-                                      const Icon(
-                                        Icons.image_rounded,
-                                        color: Colors.white,
-                                        size: 60,
-                                      ),
+                                      const Icon(Icons.image_rounded,
+                                          color: Colors.white, size: 60),
                                       const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                       "Fotos",
                                       () {},
                                       const Color.fromARGB(255, 228, 75, 255)),
                                   const SizedBox(width: 12),
                                   fileCategory(
-                                      const Icon(
-                                        Icons.play_arrow,
-                                        color: Colors.white,
-                                        size: 60,
-                                      ),
+                                      const Icon(Icons.play_arrow,
+                                          color: Colors.white, size: 60),
                                       const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                       "Videos",
                                       () {},
                                       Colors.cyan[300]),
                                   const SizedBox(width: 12),
                                   fileCategory(
-                                      const Icon(
-                                        Icons.description,
-                                        color: Colors.white,
-                                        size: 60,
-                                      ),
+                                      const Icon(Icons.description,
+                                          color: Colors.white, size: 60),
                                       const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                       "Archivos",
                                       () {},
@@ -217,7 +202,7 @@ Future<List<Widget>> getRecentFilesWidgets(
     final iconCard = isImage ? iconImage : (isVideo ? iconVideo : iconDocument);
 
     Image? imageCard;
-    final imagePreview =
+    String imagePreview =
         Uri.parse("$apiPath/$previewImages/$fileNamePreview").toString();
 
     if (user.shouldShowImage.value && (isImage || isVideo)) {
@@ -225,11 +210,8 @@ Future<List<Widget>> getRecentFilesWidgets(
         String localFilePath =
             await downloadFile(imagePreview, fileNamePreview);
 
-        if (isVideo) {
-          imageCard = Image.file(File(localFilePath), width: 130, height: 84);
-        } else if (isImage) {
-          imageCard = Image.file(File(localFilePath), width: 130, height: 84);
-        }
+        imagePreview = localFilePath;
+        imageCard = Image.file(File(localFilePath), width: 130, height: 84);
       } catch (e) {
         imageCard = null;
       }
@@ -254,6 +236,7 @@ Future<List<Widget>> getRecentFilesWidgets(
                 'file': file,
                 'filePath': filePath,
                 "icon": iconCard,
+                "image": imagePreview,
                 "isImage": isImage,
                 "isVideo": isVideo
               })),

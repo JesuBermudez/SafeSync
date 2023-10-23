@@ -7,14 +7,16 @@ import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/appBars/upload_appbar.dart';
 import 'package:safesync/ui/buttons/buttons_elevations.dart';
 import 'package:safesync/ui/labels/title_label.dart';
+import 'package:path/path.dart' as path;
 
 Widget uploadContainer(
     {required String title,
     String? folderName,
     required VoidCallback onClose}) {
+  User user = Get.find();
   TextEditingController controller = TextEditingController(text: null);
   String filePath = "";
-  User user = Get.find();
+  String? extension;
 
   return Stack(children: [
     GestureDetector(
@@ -44,6 +46,7 @@ Widget uploadContainer(
                 children: [
                   subtitleLabel("Nombre"),
                   const SizedBox(height: 10),
+                  // input
                   title == "Subir archivo"
                       ? FutureBuilder(
                           future: obtenerArchivo(),
@@ -55,9 +58,12 @@ Widget uploadContainer(
                                 onClose();
                                 return const SizedBox();
                               } else {
-                                controller.text = snapshot.data!["name"] ?? "";
+                                extension = path
+                                    .extension(snapshot.data!["name"] ?? "");
+                                controller.text = path.basenameWithoutExtension(
+                                    snapshot.data!["name"] ?? "");
                                 filePath = snapshot.data!["path"] ?? "";
-                                return getInput(title, controller);
+                                return getInput(title, controller, extension);
                               }
                             } else {
                               return const CircularProgressIndicator();
@@ -66,10 +72,14 @@ Widget uploadContainer(
                         )
                       : getInput(title, controller),
                   const SizedBox(height: 10),
+                  // Boton
                   SizedBox(
                       width: double.infinity,
                       child: sendButton(
-                          icon: const Icon(Icons.upload_rounded, size: 26),
+                          icon: title == "Subir archivo"
+                              ? const Icon(Icons.upload_rounded, size: 26)
+                              : const Icon(Icons.create_new_folder_rounded,
+                                  size: 26),
                           text: title.split(" ")[0],
                           send: () {
                             title == "Subir archivo"
@@ -86,7 +96,8 @@ Widget uploadContainer(
   ]);
 }
 
-Widget getInput(String type, TextEditingController controller) {
+Widget getInput(String type, TextEditingController controller,
+    [String? extension]) {
   if (type == "Crear carpeta") {
     return TextField(
       controller: controller,
@@ -98,10 +109,14 @@ Widget getInput(String type, TextEditingController controller) {
   } else {
     return TextField(
       controller: controller,
-      decoration: const InputDecoration(
-          border: UnderlineInputBorder(),
+      decoration: InputDecoration(
+          border: const UnderlineInputBorder(),
+          suffixText: extension,
+          suffixStyle: const TextStyle(
+              color: Color.fromRGBO(65, 116, 145, 1),
+              fontWeight: FontWeight.w500),
           hintText: "ej: Archivo",
-          hintStyle: TextStyle(color: Color.fromRGBO(176, 199, 212, 1))),
+          hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1))),
     );
   }
 }

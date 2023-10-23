@@ -27,10 +27,12 @@ Widget uploadAppBar(String title, VoidCallback onClose) {
         Flexible(
           child: Text(
             title,
+            maxLines: 1,
             style: TextStyle(
                 fontSize: 21,
                 color: Colors.grey.shade800,
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis),
           ),
         ),
         const SizedBox(width: 5)

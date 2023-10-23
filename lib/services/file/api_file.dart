@@ -8,7 +8,7 @@ class ApiFile {
   static const String url = 'api-drivehub-production.up.railway.app';
   User user = Get.find();
 
-  Future<String> shareFile(
+  Future<Map<String, dynamic>> shareFile(
       {required String fileName,
       required String folderName,
       String? token}) async {
@@ -27,12 +27,12 @@ class ApiFile {
       Map<String, dynamic> data = json.decode(response.body);
 
       if (data.containsKey("response")) {
-        return data["response"]["link"];
+        return data["response"];
       }
 
-      return 'Error al compartir.';
+      return {"Error": 'Error al compartir.'};
     } catch (e) {
-      return 'Error Desconocido';
+      return {"Error": 'Error Desconocido'};
     }
   }
 

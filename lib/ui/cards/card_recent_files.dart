@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:safesync/services/file/file.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -81,12 +83,22 @@ Widget recentFiles(
                   color: Color.fromRGBO(54, 93, 125, 1),
                 ),
                 onSelected: (String result) async {
-                  if (result == 'Compartir link') {
-                    String path = await shareFile('$titleCard', '$folderName');
-                    if (path.isNotEmpty) {
-                      Share.share(
-                          'SafeSync App\n\nTe comparto mi archivo: $titleCard\nlink: $path');
-                    }
+                  switch (result) {
+                    case 'Compartir link':
+                      Map<String, dynamic> map =
+                          await shareFile('$titleCard', '$folderName');
+                      String? path = map["link"];
+                      if (path != null) {
+                        Share.share(
+                            'SafeSync App\n\nTe comparto mi archivo: $titleCard\nlink: $path');
+                      }
+                      break;
+                    case 'Mostrar QR':
+                      Map<String, dynamic> map =
+                          await shareFile('$titleCard', '$folderName');
+                      String? path = map["QR"];
+                      path != null ? showQRDialog(titleCard!, path) : false;
+                      break;
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -94,7 +106,8 @@ Widget recentFiles(
                       value: 'Abrir con', child: Text('Abrir con')),
                   const PopupMenuItem<String>(
                       value: 'Compartir link', child: Text('Compartir link')),
-                  const PopupMenuItem(value: 'QR', child: Text('Mostrar QR')),
+                  const PopupMenuItem(
+                      value: 'Mostrar QR', child: Text('Mostrar QR')),
                   const PopupMenuItem<String>(
                       value: 'Borrar', child: Text('Borrar')),
                 ],
@@ -142,6 +155,38 @@ Widget buildVariableText(String text1, String text2) {
           ],
         );
       }
+    },
+  );
+}
+
+void showQRDialog(String fileName, String qrCodeBase64) {
+  showDialog(
+    context: Get.context!,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(fileName,
+            style: const TextStyle(overflow: TextOverflow.ellipsis),
+            maxLines: 1),
+        content: QrImageView(
+          data: qrCodeBase64,
+          errorStateBuilder: (cxt, err) {
+            return const Center(
+              child: Text(
+                'Uh oh! ocurrio un error...',
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cerrar'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
     },
   );
 }
