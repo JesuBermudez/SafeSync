@@ -84,7 +84,7 @@ Widget uploadContainer(
                           send: () {
                             title == "Subir archivo"
                                 ? uploadFile(
-                                    controller.text,
+                                    '${controller.text}$extension',
                                     folderName == ""
                                         ? "Default${user.user}"
                                         : folderName!,
