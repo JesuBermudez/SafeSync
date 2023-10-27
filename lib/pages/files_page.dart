@@ -62,14 +62,14 @@ class FilesPage extends StatelessWidget {
                       children: [
                         Text("Programación Móvil",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 19,
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(65, 86, 110, 1))),
                         SizedBox(height: 4),
                         Text(
                           "4.6 MB",
                           style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: Color.fromRGBO(115, 133, 161, 1)),
                         )

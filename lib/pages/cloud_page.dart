@@ -93,13 +93,13 @@ class CloudPage extends StatelessWidget {
                       TextSpan(
                           text: 'Total\n',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 19,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
                           text: '5 GB',
                           style: TextStyle(
-                              fontSize: 27,
+                              fontSize: 26,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
                     ])),
@@ -112,14 +112,14 @@ class CloudPage extends StatelessWidget {
                       const TextSpan(
                           text: 'Disponible\n',
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 19,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
                           text: formatSize(
                               (5000000000 - user.space.value).toDouble()),
                           style: const TextStyle(
-                              fontSize: 27,
+                              fontSize: 26,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
                     ]))
@@ -159,21 +159,21 @@ class CloudPage extends StatelessWidget {
                               children: [
                                 Text(data['type']!,
                                     style: const TextStyle(
-                                        fontSize: 19,
+                                        fontSize: 17.5,
                                         fontWeight: FontWeight.w600,
                                         color: Color.fromRGBO(55, 81, 115, 1))),
                                 Expanded(
                                   child: Row(children: [
                                     Text(data['size']!,
                                         style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 12.5,
                                             fontWeight: FontWeight.w600,
                                             color: Color.fromRGBO(
                                                 102, 135, 178, 1))),
                                     const Spacer(),
                                     Text("${data['count']} archivos",
                                         style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 11.5,
                                             fontWeight: FontWeight.w600,
                                             color: Color.fromRGBO(
                                                 102, 135, 178, 1)))
