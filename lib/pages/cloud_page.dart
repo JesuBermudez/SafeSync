@@ -194,8 +194,7 @@ class CloudPage extends StatelessWidget {
                                     child: Container(
                                       height: 10,
                                       decoration: BoxDecoration(
-                                        color: fileType[data['type']][
-                                            'Color'], // Cambia esto al color que desees
+                                        color: fileType[data['type']]['Color'],
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(5)),
                                       ),
@@ -262,7 +261,7 @@ class CloudPage extends StatelessWidget {
         'type': "Imagenes",
         'count': imageCount.toString(),
         'size': formatSize(imageSize).toString(),
-        'bytes': imageCount.toString()
+        'bytes': imageSize.toString()
       },
       {
         'type': "Videos",
