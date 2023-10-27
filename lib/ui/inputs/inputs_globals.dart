@@ -17,24 +17,19 @@ createUserName({bool show = true, required TextEditingController controller}) {
             ],
           ),
           child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0)),
-                enabledBorder: const OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 20.0),
-                hintText: 'Usuario...',
-                hintStyle:
-                    const TextStyle(color: Color.fromRGBO(176, 199, 212, 1))),
-            onChanged: (text) {
-              // ignore: avoid_print
-              print(text);
-            },
-          ),
+              controller: controller,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15.0)),
+                  enabledBorder: const OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromRGBO(200, 235, 255, 1)),
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 20.0),
+                  hintText: 'Usuario...',
+                  hintStyle: const TextStyle(
+                      color: Color.fromRGBO(176, 199, 212, 1)))),
         )
       : const SizedBox();
 }

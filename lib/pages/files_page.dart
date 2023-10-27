@@ -55,7 +55,7 @@ class FilesPage extends StatelessWidget {
                       ]),
                   child: Row(children: [
                     Icon(Icons.folder_rounded,
-                        color: Colors.red.shade500, size: 76),
+                        color: Colors.red.shade500, size: 74),
                     const SizedBox(width: 5),
                     const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -25,8 +25,8 @@ void register() async {
   showDialog(
     context: Get.context!,
     barrierDismissible: false,
-    builder: (_) => const AlertDialog(
-      content: Center(child: CircularProgressIndicator()),
+    builder: (_) => const Center(
+      child: CircularProgressIndicator(),
     ),
   );
 
@@ -47,6 +47,7 @@ void register() async {
           content: Text('Fuiste registrado con exito'),
         ),
       );
+      Get.offNamed("login");
       user.clear();
       prefs.setBool('firstTime', false);
     } else {

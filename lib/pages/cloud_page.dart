@@ -28,7 +28,7 @@ class CloudPage extends StatelessWidget {
                     CircularStackEntry(
                       <CircularSegmentEntry>[
                         CircularSegmentEntry(
-                          user.space.value.toDouble(),
+                          user.space.value <= 1 ? 0 : user.space.value,
                           const Color.fromRGBO(28, 123, 255, 1),
                           rankKey: 'completed',
                         ),
@@ -59,25 +59,26 @@ class CloudPage extends StatelessWidget {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                          text: formatSize(user.space.value.toDouble())
+                          text: formatSize(
+                                  user.space.value <= 1 ? 0 : user.space.value)
                               .split(" ")[0],
                           style: const TextStyle(
-                              fontSize: 55,
+                              fontSize: 53,
                               color: Color.fromRGBO(49, 48, 102, 1),
                               fontWeight: FontWeight.w600),
                         ),
                         TextSpan(
                           text:
-                              ' ${formatSize(user.space.value.toDouble()).split(" ")[1]}\n',
+                              ' ${formatSize(user.space.value).split(" ")[1]}\n',
                           style: const TextStyle(
-                              fontSize: 25,
+                              fontSize: 24,
                               color: Color.fromRGBO(116, 117, 155, 1),
                               fontWeight: FontWeight.w600),
                         ),
                         const TextSpan(
                           text: 'espacio usado',
                           style: TextStyle(
-                              fontSize: 19,
+                              fontSize: 18,
                               color: Color.fromRGBO(116, 117, 155, 1),
                               fontWeight: FontWeight.w600),
                         ),

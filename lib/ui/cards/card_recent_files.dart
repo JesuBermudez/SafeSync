@@ -109,7 +109,7 @@ Widget recentFiles(
                     case 'Mostrar QR':
                       Map<String, dynamic> map =
                           await shareFile(titleCard, folderName);
-                      String? path = map["QR"];
+                      String? path = map["link"];
                       if (path != null) {
                         showQRDialog(titleCard, path);
                       }

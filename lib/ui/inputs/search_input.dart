@@ -15,9 +15,8 @@ class SearchInput extends StatelessWidget {
         borderRadius: BorderRadius.circular(30.0),
         boxShadow: const [
           BoxShadow(
-            color: Color.fromRGBO(176, 217, 255, 1),
-            blurRadius: 30.0,
-            spreadRadius: 0.1,
+            color: Color.fromRGBO(176, 217, 255, 0.4),
+            blurRadius: 15.0,
             offset: Offset(0, 12),
           ),
         ],

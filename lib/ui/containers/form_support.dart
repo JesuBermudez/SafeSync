@@ -53,7 +53,7 @@ class FormSupport extends StatelessWidget {
           "Valoramos mucho tu opinión y estamos aquí para ayudarte. ",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Color.fromARGB(255, 30, 49, 156),
+              color: Color.fromARGB(255, 96, 120, 139),
               fontSize: 20,
               fontWeight: FontWeight.w700),
         )

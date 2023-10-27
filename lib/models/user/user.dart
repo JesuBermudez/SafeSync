@@ -7,7 +7,7 @@ class User extends GetxController {
   var password = "".obs;
   var avatar = "".obs;
   var premium = false.obs;
-  var space = 0.obs;
+  var space = 0.0.obs;
   var directories = <Directories>[].obs;
   var shouldShowImage = true.obs;
 
@@ -23,7 +23,7 @@ class User extends GetxController {
     password.value = json["password"];
     avatar.value = json["avatar"];
     premium.value = json["premiun"] ?? false;
-    space.value = json["space"] ?? 5000;
+    space.value = json["space"] > 0 ? json["space"].toDouble() : 1.0;
 
     directories.value = json["directories"]
         .map<Directories>((dirJson) => Directories(dirJson))
