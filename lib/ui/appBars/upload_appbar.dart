@@ -29,7 +29,7 @@ Widget uploadAppBar(String title, VoidCallback onClose) {
             title,
             maxLines: 1,
             style: TextStyle(
-                fontSize: 21,
+                fontSize: 19,
                 color: Colors.grey.shade800,
                 fontWeight: FontWeight.w500,
                 overflow: TextOverflow.ellipsis),

@@ -1,14 +1,8 @@
-import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/appBars/upload_appbar.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:open_file/open_file.dart';
 
 // ignore: must_be_immutable
 class FileOpen extends StatelessWidget {
@@ -18,12 +12,16 @@ class FileOpen extends StatelessWidget {
 
   ValueNotifier<double?> width = ValueNotifier<double?>(null);
   ValueNotifier<double?> height = ValueNotifier<double?>(null);
+
+  var padd = 0.0.obs;
   var widthObs = 0.0.obs;
   var localPath = "".obs;
   var isExpanded = false.obs;
+  var isDownloading = false.obs;
 
   @override
   Widget build(BuildContext context) {
+    padd.value = !(file["isImage"] || file["isVideo"]) ? 48 : 0;
     return Stack(
       children: [
         GestureDetector(
@@ -41,7 +39,7 @@ class FileOpen extends StatelessWidget {
         // AppBar
         Positioned(
             top: 0,
-            child: uploadAppBar("${file['file'].namefile}", () async {
+            child: uploadAppBar("${file['file'].nameFile}", () async {
               final File file = File(localPath.value);
               if (await file.exists()) {
                 await file.delete();
@@ -66,22 +64,48 @@ class FileOpen extends StatelessWidget {
                       child: Stack(
                         children: [
                           Padding(
-                              padding: (localPath.value != "" ||
-                                      widthObs.value != 0.0)
-                                  ? const EdgeInsets.only(bottom: 48)
-                                  : EdgeInsets.zero,
+                              padding: EdgeInsets.only(bottom: padd.value),
                               child: (file["isVideo"] || file["isImage"])
                                   ? fileThumbnailWidget()
-                                  : IconButton(
-                                      onPressed: () =>
-                                          openFile(localPath.value),
-                                      icon: file["icon"],
-                                      iconSize: 180,
-                                      padding: const EdgeInsets.all(40),
-                                    )),
+                                  : !isDownloading.value
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            isDownloading.value = true;
+                                            String path = await downloadFile(
+                                                file["filePath"],
+                                                file["file"].namefile,
+                                                (path) =>
+                                                    localPath.value = path);
+                                            isDownloading.value = false;
+                                            if (path != "") {
+                                              openFile(path);
+                                            }
+                                          },
+                                          icon: file["icon"],
+                                          iconSize: 180,
+                                          padding: const EdgeInsets.all(40))
+                                      : const Padding(
+                                          padding: EdgeInsets.all(100),
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              SizedBox(
+                                                  width: 60,
+                                                  height: 60,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                          strokeWidth: 5,
+                                                          color: Colors
+                                                              .indigoAccent)),
+                                              Icon(Icons.download,
+                                                  color: Colors.indigoAccent,
+                                                  size: 46)
+                                            ],
+                                          ),
+                                        )),
                           Align(
                               alignment: Alignment.bottomCenter,
-                              child: animatedContainerWidget())
+                              child: animatedContainerWidget()),
                         ],
                       ),
                     ),
@@ -93,50 +117,8 @@ class FileOpen extends StatelessWidget {
     );
   }
 
-  Future<String> downloadFile(String url, String filename) async {
-    final directory = await getExternalStorageDirectory();
-    if (directory == null) {
-      return "";
-    }
-    var filePath = '${directory.path}/$filename';
-    var file = File(filePath);
-
-    if (!file.existsSync()) {
-      // Descargar el archivo
-      try {
-        final response = await http.get(Uri.parse(url));
-        await file.writeAsBytes(response.bodyBytes);
-      } catch (e) {
-        showDialog(
-            context: Get.context!,
-            builder: (_) => AlertDialog(
-                  title: const Text("Error"),
-                  content: Text('Error al abrir el archivo: $filename'),
-                ));
-        Get.offNamed("/login");
-      }
-    }
-    localPath.value = filePath;
-
-    return filePath;
-  }
-
-  Future<Uint8List?> fetchThumbnail(String videoPath) async {
-    try {
-      final uint8list = await VideoThumbnail.thumbnailData(
-        video: videoPath,
-        imageFormat: ImageFormat.PNG,
-        quality: 100,
-      );
-
-      return uint8list;
-    } catch (e) {
-      return null;
-    }
-  }
-
   Widget animatedContainerWidget() {
-    if (widthObs.value != 0) {
+    if (widthObs.value != 0 || !(file["isImage"] || file["isVideo"])) {
       return AnimatedContainer(
         clipBehavior: Clip.hardEdge,
         duration: const Duration(milliseconds: 150),
@@ -192,6 +174,9 @@ class FileOpen extends StatelessWidget {
             widthObs.value = getWidth(info.image.width.toDouble());
             height.value = getHeight(
                 info.image.height.toDouble(), info.image.width.toDouble());
+            if (widthObs.value != 0) {
+              padd.value = 48;
+            }
           },
         ),
       );
@@ -201,6 +186,7 @@ class FileOpen extends StatelessWidget {
         builder: (BuildContext context, double? widthValue, Widget? child) {
           if (widthValue != null && height.value != null) {
             return Container(
+              alignment: Alignment.center,
               color: Colors.grey.shade200,
               width: widthValue,
               height: getHeight(height.value, widthObs.value),
@@ -236,11 +222,14 @@ class FileOpen extends StatelessWidget {
       final Image image = Image.network(file["filePath"]);
       image.image.resolve(const ImageConfiguration()).addListener(
         ImageStreamListener(
-          (ImageInfo info, bool _) {
+          (ImageInfo info, bool syncCall) {
             width.value = getWidth(info.image.width.toDouble());
             widthObs.value = getWidth(info.image.width.toDouble());
             height.value = getHeight(
                 info.image.height.toDouble(), info.image.width.toDouble());
+            if (widthObs.value != 0) {
+              padd.value = 48;
+            }
           },
         ),
       );
@@ -254,19 +243,8 @@ class FileOpen extends StatelessWidget {
                 width: widthValue,
                 height: height.value,
                 child: Center(
-                    child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: GestureDetector(
-                            onTap: () async {
-                              await downloadFile(
-                                  file["filePath"], file["file"].namefile);
-                              if (localPath.value != "") {
-                                openFile(localPath.value);
-                              }
-                            },
-                            child: image))));
+                    child: FittedBox(fit: BoxFit.contain, child: image)));
           } else {
-            // indicador de progreso mientras se carga el thumbnail.
             return const Padding(
               padding: EdgeInsets.all(15.0),
               child: CircularProgressIndicator(),
@@ -295,20 +273,5 @@ double getHeight(double? height, double? width) {
     return height! > Get.height - 200
         ? height / 3
         : (height < 200 ? height + (200 - height) : height);
-  }
-}
-
-void openFile(String pathToFile) async {
-  if (await Permission.manageExternalStorage.request().isGranted) {
-    final result = await OpenFile.open(pathToFile);
-
-    if (result.type != ResultType.done) {
-      showDialog(
-          context: Get.context!,
-          builder: (_) => AlertDialog(
-                title: Text(pathToFile.split("/")[-1]),
-                content: Text('Error al abrir el archivo: ${result.message}'),
-              ));
-    }
   }
 }

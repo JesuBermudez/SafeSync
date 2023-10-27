@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/pages/cloud_page.dart';
 import 'package:safesync/pages/files_page.dart';
 import 'package:safesync/pages/home_page.dart';
 import 'package:safesync/pages/launch_page.dart';
@@ -55,8 +56,10 @@ class AppContent extends StatelessWidget {
     const activeColor = Color.fromRGBO(2, 103, 212, 1);
 
     List<Widget> pages = [
-      Container(),
-      FilesPage(),
+      CloudPage(),
+      FilesPage((Color color) {
+        scaffoldBackground.value = color;
+      }),
       HomePage((Color color) {
         scaffoldBackground.value = color;
       }),

@@ -70,4 +70,29 @@ class ApiFile {
       return {'Error': 'Error desconocido'};
     }
   }
+
+  Future<Map<String, dynamic>> deleteFile(
+      {required List<String> fileName,
+      required String folderName,
+      String? token}) async {
+    try {
+      final response = await http.delete(
+          Uri.https(url, '/api/users/deletefiles/${user.user}/$folderName'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode({"files": fileName}));
+
+      Map<String, dynamic> data = json.decode(response.body);
+
+      if (data.containsKey("user")) {
+        return data["user"];
+      }
+
+      return {'Error': 'Error al eliminar'};
+    } catch (e) {
+      return {'Error': 'Error desconocido'};
+    }
+  }
 }

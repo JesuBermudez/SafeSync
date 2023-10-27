@@ -39,9 +39,7 @@ dependencies:
   get: ^4.6.6
   animate_do: ^3.1.2
   shared_preferences: ^2.2.1
-  video_thumbnail: ^0.5.3
   path_provider: ^2.1.1
-  flutter_ffmpeg: ^0.4.2
   android_intent_plus: ^4.0.3
   open_file: ^3.3.2 
   permission_handler: ^11.0.1
@@ -50,7 +48,7 @@ dependencies:
   dio: ^5.3.3
   path: ^1.8.3
   qr_flutter: ^4.1.0
-  cached_network_image: ^3.3.0
+  circular_chart_flutter: ^0.0.2
 
 
 dev_dependencies:

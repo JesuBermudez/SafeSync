@@ -7,11 +7,13 @@ import 'package:share_plus/share_plus.dart';
 Widget recentFiles(
     {Icon? iconCard,
     Image? imageCard,
-    String? titleCard,
+    required String titleCard,
     String? dateCard,
     String? weightCard,
-    String? folderName,
-    Function()? onTap}) {
+    required String folderName,
+    required String filePath,
+    required Function(String) onDownload,
+    required Function() onTap}) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -37,7 +39,6 @@ Widget recentFiles(
                         margin: const EdgeInsets.only(bottom: 10),
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10)),
                         child: imageCard,
                       )
@@ -52,7 +53,7 @@ Widget recentFiles(
                   child: Column(
                     children: [
                       Text(
-                        '$titleCard',
+                        titleCard,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: const TextStyle(
@@ -84,9 +85,21 @@ Widget recentFiles(
                 ),
                 onSelected: (String result) async {
                   switch (result) {
+                    case 'Abrir con':
+                      showDialog(
+                          context: Get.context!,
+                          builder: (context) =>
+                              const Center(child: CircularProgressIndicator()));
+                      String currentPath =
+                          await downloadFile(filePath, titleCard, onDownload);
+                      Navigator.pop(Get.context!);
+                      if (currentPath != "") {
+                        openFile(currentPath);
+                      }
+                      break;
                     case 'Compartir link':
                       Map<String, dynamic> map =
-                          await shareFile('$titleCard', '$folderName');
+                          await shareFile(titleCard, folderName);
                       String? path = map["link"];
                       if (path != null) {
                         Share.share(
@@ -95,9 +108,14 @@ Widget recentFiles(
                       break;
                     case 'Mostrar QR':
                       Map<String, dynamic> map =
-                          await shareFile('$titleCard', '$folderName');
+                          await shareFile(titleCard, folderName);
                       String? path = map["QR"];
-                      path != null ? showQRDialog(titleCard!, path) : false;
+                      if (path != null) {
+                        showQRDialog(titleCard, path);
+                      }
+                      break;
+                    case 'Borrar':
+                      deleteFile([titleCard], folderName);
                       break;
                   }
                 },

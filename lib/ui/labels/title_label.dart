@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget titleLabel(String textContent, {double? fontSize}) {
+Widget titleLabel(String textContent, {double fontSize = 22}) {
   return Text(
     textContent,
     style: TextStyle(
         color: const Color.fromRGBO(0, 81, 151, 1),
-        fontSize: fontSize ?? 22,
+        fontSize: fontSize,
         fontWeight: FontWeight.bold,
         shadows: const [
           Shadow(

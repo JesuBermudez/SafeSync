@@ -71,10 +71,6 @@ class Files {
   Files(Map<String, dynamic> json) {
     nameFile = json["nameFile"];
     date = json["Date"];
-    size = json["size"] / (1024 * 2);
+    size = json["size"].toDouble();
   }
-
-  String get namefile => nameFile;
-  String get datefile => DateTime.parse(date).toString();
-  double get sizefile => size;
 }

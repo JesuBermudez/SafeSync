@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
@@ -12,11 +11,15 @@ import 'package:path/path.dart' as path;
 Widget uploadContainer(
     {required String title,
     String? folderName,
+    Map? fileData,
     required VoidCallback onClose}) {
   User user = Get.find();
-  TextEditingController controller = TextEditingController(text: null);
-  String filePath = "";
-  String? extension;
+  TextEditingController controller = TextEditingController(
+      text: fileData != null
+          ? path.basenameWithoutExtension(fileData["name"])
+          : null);
+  String filePath = fileData != null ? fileData["path"] : "";
+  String extension = path.extension(fileData != null ? fileData["name"] : "");
 
   return Stack(children: [
     GestureDetector(
@@ -47,30 +50,7 @@ Widget uploadContainer(
                   subtitleLabel("Nombre"),
                   const SizedBox(height: 10),
                   // input
-                  title == "Subir archivo"
-                      ? FutureBuilder(
-                          future: obtenerArchivo(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Map<String, String>> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              if (snapshot.hasError || snapshot.data == null) {
-                                onClose();
-                                return const SizedBox();
-                              } else {
-                                extension = path
-                                    .extension(snapshot.data!["name"] ?? "");
-                                controller.text = path.basenameWithoutExtension(
-                                    snapshot.data!["name"] ?? "");
-                                filePath = snapshot.data!["path"] ?? "";
-                                return getInput(title, controller, extension);
-                              }
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          },
-                        )
-                      : getInput(title, controller),
+                  getInput(title, controller, extension),
                   const SizedBox(height: 10),
                   // Boton
                   SizedBox(
@@ -113,22 +93,11 @@ Widget getInput(String type, TextEditingController controller,
           border: const UnderlineInputBorder(),
           suffixText: extension,
           suffixStyle: const TextStyle(
-              color: Color.fromRGBO(65, 116, 145, 1),
-              fontWeight: FontWeight.w500),
+              color: Color.fromRGBO(176, 199, 212, 1),
+              fontWeight: FontWeight.w500,
+              fontSize: 16),
           hintText: "ej: Archivo",
           hintStyle: const TextStyle(color: Color.fromRGBO(176, 199, 212, 1))),
     );
-  }
-}
-
-Future<Map<String, String>> obtenerArchivo() async {
-  FilePickerResult? resultado = await FilePicker.platform.pickFiles();
-
-  if (resultado != null) {
-    PlatformFile archivo = resultado.files.first;
-
-    return {"name": archivo.name, "path": "${archivo.path}"};
-  } else {
-    return {"canceled": "canceled"};
   }
 }
