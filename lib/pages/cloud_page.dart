@@ -94,13 +94,13 @@ class CloudPage extends StatelessWidget {
                       TextSpan(
                           text: 'Total\n',
                           style: TextStyle(
-                              fontSize: 19,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
                           text: '5 GB',
                           style: TextStyle(
-                              fontSize: 26,
+                              fontSize: 25,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
                     ])),
@@ -113,14 +113,14 @@ class CloudPage extends StatelessWidget {
                       const TextSpan(
                           text: 'Disponible\n',
                           style: TextStyle(
-                              fontSize: 19,
+                              fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
                           text: formatSize(
                               (5000000000 - user.space.value).toDouble()),
                           style: const TextStyle(
-                              fontSize: 26,
+                              fontSize: 25,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
                     ]))

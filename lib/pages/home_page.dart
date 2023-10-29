@@ -251,6 +251,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user,
           onTap: () => onFileSelected({
                 'file': file,
                 'filePath': filePath,
+                "folder": directoryName,
                 "icon": iconCard,
                 "image": imagePreview,
                 "isImage": isImage,

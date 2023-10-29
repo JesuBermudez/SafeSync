@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/appBars/upload_appbar.dart';
+import 'package:video_player/video_player.dart';
 
 // ignore: must_be_immutable
 class FileOpen extends StatelessWidget {
@@ -12,8 +14,8 @@ class FileOpen extends StatelessWidget {
 
   ValueNotifier<double?> width = ValueNotifier<double?>(null);
   ValueNotifier<double?> height = ValueNotifier<double?>(null);
+  ValueNotifier<bool> isPlaying = ValueNotifier<bool>(false);
 
-  var padd = 0.0.obs;
   var widthObs = 0.0.obs;
   var localPath = "".obs;
   var isExpanded = false.obs;
@@ -21,7 +23,6 @@ class FileOpen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    padd.value = !(file["isImage"] || file["isVideo"]) ? 48 : 0;
     return Stack(
       children: [
         GestureDetector(
@@ -63,46 +64,42 @@ class FileOpen extends StatelessWidget {
                     child: IntrinsicHeight(
                       child: Stack(
                         children: [
-                          Padding(
-                              padding: EdgeInsets.only(bottom: padd.value),
-                              child: (file["isVideo"] || file["isImage"])
-                                  ? fileThumbnailWidget()
-                                  : !isDownloading.value
-                                      ? IconButton(
-                                          onPressed: () async {
-                                            isDownloading.value = true;
-                                            String path = await downloadFile(
-                                                file["filePath"],
-                                                file["file"].namefile,
-                                                (path) =>
-                                                    localPath.value = path);
-                                            isDownloading.value = false;
-                                            if (path != "") {
-                                              openFile(path);
-                                            }
-                                          },
-                                          icon: file["icon"],
-                                          iconSize: 180,
-                                          padding: const EdgeInsets.all(40))
-                                      : const Padding(
-                                          padding: EdgeInsets.all(100),
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              SizedBox(
-                                                  width: 60,
-                                                  height: 60,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          strokeWidth: 5,
-                                                          color: Colors
-                                                              .indigoAccent)),
-                                              Icon(Icons.download,
-                                                  color: Colors.indigoAccent,
-                                                  size: 46)
-                                            ],
-                                          ),
-                                        )),
+                          (file["isVideo"] || file["isImage"])
+                              ? fileThumbnailWidget()
+                              : !isDownloading.value
+                                  ? IconButton(
+                                      onPressed: () async {
+                                        isDownloading.value = true;
+                                        String path = await downloadFile(
+                                            file["filePath"],
+                                            file["file"].namefile,
+                                            (path) => localPath.value = path);
+                                        isDownloading.value = false;
+                                        if (path != "") {
+                                          openFile(path);
+                                        }
+                                      },
+                                      icon: file["icon"],
+                                      iconSize: 180,
+                                      padding: const EdgeInsets.all(40))
+                                  : const Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                          100, 100, 100, 148),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          SizedBox(
+                                              width: 60,
+                                              height: 60,
+                                              child: CircularProgressIndicator(
+                                                  strokeWidth: 5,
+                                                  color: Colors.indigoAccent)),
+                                          Icon(Icons.download,
+                                              color: Colors.indigoAccent,
+                                              size: 46)
+                                        ],
+                                      ),
+                                    ),
                           Align(
                               alignment: Alignment.bottomCenter,
                               child: animatedContainerWidget()),
@@ -118,7 +115,8 @@ class FileOpen extends StatelessWidget {
   }
 
   Widget animatedContainerWidget() {
-    if (widthObs.value != 0 || !(file["isImage"] || file["isVideo"])) {
+    if (!isPlaying.value &&
+        (widthObs.value != 0 || !(file["isImage"] || file["isVideo"]))) {
       return AnimatedContainer(
         clipBehavior: Clip.hardEdge,
         duration: const Duration(milliseconds: 150),
@@ -174,50 +172,102 @@ class FileOpen extends StatelessWidget {
             widthObs.value = getWidth(info.image.width.toDouble());
             height.value = getHeight(
                 info.image.height.toDouble(), info.image.width.toDouble());
-            if (widthObs.value != 0) {
-              padd.value = 48;
-            }
           },
         ),
       );
 
-      return ValueListenableBuilder<double?>(
-        valueListenable: width,
-        builder: (BuildContext context, double? widthValue, Widget? child) {
-          if (widthValue != null && height.value != null) {
-            return Container(
-              alignment: Alignment.center,
-              color: Colors.grey.shade200,
-              width: widthValue,
-              height: getHeight(height.value, widthObs.value),
-              child: Stack(
-                children: [
-                  Center(
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: image,
-                    ),
-                  ),
-                  Center(
-                    child: IconButton(
-                        icon: const Icon(Icons.play_circle),
-                        color: Colors.blue,
-                        iconSize: 55,
-                        onPressed: () => {} //openFile(localPath.value),
+      return ValueListenableBuilder(
+          valueListenable: isPlaying,
+          builder: (context, isPlayingValue, child) {
+            if (isPlayingValue) {
+              return FutureBuilder<Map<String, dynamic>>(
+                future: shareFile(file["file"].nameFile, file["folder"]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Muestra un indicador de carga mientras se espera la respuesta.
+                    return const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    // Maneja cualquier error que ocurra durante la solicitud.
+                    return Text('Ocurrió un error: ${snapshot.error}');
+                  } else {
+                    String? path = snapshot.data?["link"];
+                    if (path == null) {
+                      // Si path es null, retorna un ícono o cualquier otro widget.
+                      return const Padding(
+                        padding: EdgeInsets.all(100),
+                        child:
+                            Icon(Icons.error, size: 180, color: Colors.amber),
+                      );
+                    } else {
+                      final VideoPlayerController controller =
+                          VideoPlayerController.networkUrl(Uri.parse(path));
+                      final ChewieController chewieController =
+                          ChewieController(
+                        videoPlayerController: controller,
+                        autoInitialize: true,
+                        autoPlay: false,
+                        looping: false,
+                      );
+                      return AspectRatio(
+                        aspectRatio: controller.value.aspectRatio,
+                        child: Chewie(
+                          controller: chewieController,
                         ),
-                  )
-                ],
-              ),
-            );
-          } else {
-            // indicador de progreso mientras se carga el thumbnail.
-            return const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      );
+                      );
+                    }
+                  }
+                },
+              );
+            } else {
+              return ValueListenableBuilder<double?>(
+                valueListenable: width,
+                builder:
+                    (BuildContext context, double? widthValue, Widget? child) {
+                  if (widthValue != null && height.value != null) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 48),
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.grey.shade200,
+                        width: widthValue,
+                        height: getHeight(height.value, widthValue),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: image,
+                              ),
+                            ),
+                            Center(
+                              child: IconButton(
+                                icon: const Icon(Icons.play_circle),
+                                color: Colors.blue,
+                                iconSize: 55,
+                                onPressed: () {
+                                  isPlaying.value = true;
+                                  widthObs.value = 1;
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    // indicador de progreso mientras se carga el thumbnail.
+                    return const Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              );
+            }
+          });
     } else if (file["isImage"]) {
       final Image image = Image.network(file["filePath"]);
       image.image.resolve(const ImageConfiguration()).addListener(
@@ -227,9 +277,6 @@ class FileOpen extends StatelessWidget {
             widthObs.value = getWidth(info.image.width.toDouble());
             height.value = getHeight(
                 info.image.height.toDouble(), info.image.width.toDouble());
-            if (widthObs.value != 0) {
-              padd.value = 48;
-            }
           },
         ),
       );
@@ -238,12 +285,15 @@ class FileOpen extends StatelessWidget {
         valueListenable: width,
         builder: (BuildContext context, double? widthValue, Widget? child) {
           if (widthValue != null && height.value != null) {
-            return Container(
-                color: Colors.grey.shade200,
-                width: widthValue,
-                height: height.value,
-                child: Center(
-                    child: FittedBox(fit: BoxFit.contain, child: image)));
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 48),
+              child: Container(
+                  color: Colors.grey.shade200,
+                  width: widthValue,
+                  height: height.value,
+                  child: Center(
+                      child: FittedBox(fit: BoxFit.contain, child: image))),
+            );
           } else {
             return const Padding(
               padding: EdgeInsets.all(15.0),
