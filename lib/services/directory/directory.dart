@@ -61,3 +61,50 @@ void directory(String folderName) async {
     );
   }
 }
+
+void deleteDirectory(String folderName) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // Show loading indicator
+  showDialog(
+      context: Get.context!,
+      builder: (context) => const Center(child: CircularProgressIndicator()));
+
+  final userToken = prefs.getString('userToken');
+
+  ApiDirectory apiService = ApiDirectory();
+
+  try {
+    String sucess = await apiService.deleteDirectory(
+        folderName: folderName, token: userToken);
+    Navigator.pop(Get.context!);
+    if (sucess == 'Ok') {
+      showDialog(
+        context: Get.context!,
+        builder: (_) => AlertDialog(
+          title: Text('"$folderName"'),
+          content: const Text('La carpeta ha sido eliminada.'),
+        ),
+      );
+
+      getUser();
+    } else {
+      showDialog(
+        context: Get.context!,
+        builder: (_) => const AlertDialog(
+          title: Text('Error'),
+          content: Text('No se pudo eliminar la carpeta'),
+        ),
+      );
+    }
+  } catch (e) {
+    Navigator.pop(Get.context!);
+    showDialog(
+      context: Get.context!,
+      builder: (_) => const AlertDialog(
+        title: Text('Error'),
+        content: Text('No se pudo eliminar la carpeta'),
+      ),
+    );
+  }
+}

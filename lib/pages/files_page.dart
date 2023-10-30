@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:safesync/models/user/user.dart';
+import 'package:safesync/services/directory/directory.dart';
 import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/buttons/buttons_elevations.dart';
 import 'package:safesync/ui/containers/file_open_container.dart';
@@ -281,63 +281,60 @@ class FilesPage extends StatelessWidget {
                 ),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(7),
-                    child: PopupMenuButton<String>(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.more_vert_rounded,
-                        color: Color.fromRGBO(54, 93, 125, 1),
-                      ),
-                      onSelected: (String result) async {
-                        switch (result) {
-                          case 'Abrir con':
-                            showDialog(
-                                context: Get.context!,
-                                builder: (context) => const Center(
-                                    child: CircularProgressIndicator()));
-                            String currentPath = await downloadFile(
-                                filePath, file.nameFile, onDownload!);
-                            Navigator.pop(Get.context!);
-                            if (currentPath != "") {
-                              openFile(currentPath);
-                            }
-                            break;
-                          case 'Compartir link':
-                            Map<String, dynamic> map =
-                                await shareFile(file.nameFile, directory);
-                            String? path = map["link"];
-                            if (path != null) {
-                              Share.share(
-                                  'SafeSync App\n\nTe comparto mi archivo: ${file.nameFile}\nlink: $path');
-                            }
-                            break;
-                          case 'Mostrar QR':
-                            Map<String, dynamic> map =
-                                await shareFile(file.nameFile, directory);
-                            String? path = map["link"];
-                            if (path != null) {
-                              showQRDialog(file.nameFile, path);
-                            }
-                            break;
-                          case 'Borrar':
-                            deleteFile([file.nameFile], directory);
-                            break;
-                        }
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                            value: 'Abrir con', child: Text('Abrir con')),
-                        const PopupMenuItem<String>(
-                            value: 'Compartir link',
-                            child: Text('Compartir link')),
-                        const PopupMenuItem(
-                            value: 'Mostrar QR', child: Text('Mostrar QR')),
-                        const PopupMenuItem<String>(
-                            value: 'Borrar', child: Text('Borrar')),
-                      ],
+                  child: PopupMenuButton<String>(
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.more_vert_rounded,
+                      color: Color.fromRGBO(54, 93, 125, 1),
                     ),
+                    onSelected: (String result) async {
+                      switch (result) {
+                        case 'Abrir con':
+                          showDialog(
+                              context: Get.context!,
+                              builder: (context) => const Center(
+                                  child: CircularProgressIndicator()));
+                          String currentPath = await downloadFile(
+                              filePath, file.nameFile, onDownload!);
+                          Navigator.pop(Get.context!);
+                          if (currentPath != "") {
+                            openFile(currentPath);
+                          }
+                          break;
+                        case 'Compartir link':
+                          Map<String, dynamic> map =
+                              await shareFile(file.nameFile, directory);
+                          String? path = map["link"];
+                          if (path != null) {
+                            Share.share(
+                                'SafeSync App\n\nTe comparto mi archivo: ${file.nameFile}\nlink: $path');
+                          }
+                          break;
+                        case 'Mostrar QR':
+                          Map<String, dynamic> map =
+                              await shareFile(file.nameFile, directory);
+                          String? path = map["link"];
+                          if (path != null) {
+                            showQRDialog(file.nameFile, path);
+                          }
+                          break;
+                        case 'Borrar':
+                          deleteFile([file.nameFile], directory);
+                          break;
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      const PopupMenuItem<String>(
+                          value: 'Abrir con', child: Text('Abrir con')),
+                      const PopupMenuItem<String>(
+                          value: 'Compartir link',
+                          child: Text('Compartir link')),
+                      const PopupMenuItem(
+                          value: 'Mostrar QR', child: Text('Mostrar QR')),
+                      const PopupMenuItem<String>(
+                          value: 'Borrar', child: Text('Borrar')),
+                    ],
                   ),
                 ),
               ])),
@@ -366,30 +363,47 @@ class FilesPage extends StatelessWidget {
                 Icon(Icons.folder_rounded,
                     color: Colors.red.shade500, size: 68),
                 const SizedBox(width: 5),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(directory,
-                        maxLines: 1,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(directory,
+                          maxLines: 1,
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              overflow: TextOverflow.ellipsis,
+                              color: Color.fromRGBO(65, 86, 110, 1))),
+                      const SizedBox(height: 4),
+                      Text(
+                        formatFileSize(totalSize),
                         style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
                             fontWeight: FontWeight.w500,
-                            overflow: TextOverflow.ellipsis,
-                            color: Color.fromRGBO(65, 86, 110, 1))),
-                    const SizedBox(height: 4),
-                    Text(
-                      formatFileSize(totalSize),
-                      style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: Color.fromRGBO(115, 133, 161, 1)),
-                    )
-                  ],
+                            color: Color.fromRGBO(115, 133, 161, 1)),
+                      )
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                const Icon(Icons.more_horiz,
-                    size: 30, color: Color.fromRGBO(52, 86, 119, 1)),
-                const SizedBox(width: 6)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: PopupMenuButton<String>(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(
+                        Icons.more_vert_rounded,
+                        color: Color.fromRGBO(54, 93, 125, 1),
+                      ),
+                      onSelected: (value) {
+                        if (value == "Borrar") {
+                          deleteDirectory(directory);
+                        }
+                      },
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                                value: "Borrar", child: Text("Borrar"))
+                          ]),
+                ),
               ])),
         )
       ];
