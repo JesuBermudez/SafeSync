@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget fileCategory(Icon cardIcon, EdgeInsetsGeometry cardPadding,
-    String cardText, VoidCallback cardOnPressed,
+    String cardText, Function cardOnPressed,
     [Color? cardColor]) {
   return Column(
     mainAxisSize: MainAxisSize.min,

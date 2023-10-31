@@ -17,7 +17,8 @@ import 'package:safesync/ui/labels/title_label.dart';
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   final Function(Color) setColor;
-  HomePage(this.setColor, {super.key});
+  final Function(String) setFilter;
+  HomePage(this.setColor, this.setFilter, {super.key});
 
   User user = Get.find();
   TextEditingController search = TextEditingController();
@@ -59,22 +60,22 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 80),
                                   const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                   "Todo",
-                                  () {}),
+                                  () => setFilter('')),
                               const SizedBox(width: 12),
                               fileCategory(
                                   const Icon(Icons.folder,
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Carpetas",
-                                  () {},
+                                  () => setFilter('Folder'),
                                   Colors.red.shade500),
                               const SizedBox(width: 12),
                               fileCategory(
                                   const Icon(Icons.image_rounded,
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
-                                  "Fotos",
-                                  () {},
+                                  "Imagenes",
+                                  () => setFilter('Imagen'),
                                   const Color.fromARGB(255, 228, 75, 255)),
                               const SizedBox(width: 12),
                               fileCategory(
@@ -82,7 +83,7 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Videos",
-                                  () {},
+                                  () => setFilter('Video'),
                                   Colors.cyan.shade300),
                               const SizedBox(width: 12),
                               fileCategory(
@@ -90,7 +91,7 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Archivos",
-                                  () {},
+                                  () => setFilter('Documento'),
                                   Colors.greenAccent[400]),
                             ],
                           )),
@@ -188,7 +189,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user,
     for (final file in directory.files) {
       allFiles.add({
         'file': file,
-        'directoryName': directory.nameDirectory.value,
+        'directoryName': directory.nameDirectory,
       });
     }
   }

@@ -17,7 +17,7 @@ import 'package:share_plus/share_plus.dart';
 // ignore: must_be_immutable
 class FilesPage extends StatelessWidget {
   final Function(Color) setColor;
-  FilesPage(this.setColor, {super.key});
+  FilesPage(this.setColor, this.filterOption, {super.key});
 
   User user = Get.find();
 
@@ -28,6 +28,8 @@ class FilesPage extends StatelessWidget {
   var folderName = Rx<String>("Archivos");
   var isShowingFileWidget = false.obs;
   var selectedFile = {}.obs;
+  var filterOption = "".obs;
+  var descOrder = true.obs;
   String localPath = "";
 
   @override
@@ -50,11 +52,32 @@ class FilesPage extends StatelessWidget {
                   ],
                   titleLabel(folderName.value, fontSize: 24),
                   const Spacer(),
-                  const Icon(Icons.filter_alt_outlined,
-                      color: Color.fromRGBO(122, 133, 159, 1), size: 25),
+                  PopupMenuButton(
+                      icon: const Icon(Icons.filter_alt_outlined,
+                          color: Color.fromRGBO(122, 133, 159, 1), size: 25),
+                      padding: EdgeInsets.zero,
+                      onSelected: (value) => value != filterOption.value
+                          ? filterOption.value = value
+                          : false,
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                                value: '', child: Text("Todos")),
+                            const PopupMenuItem<String>(
+                                value: 'Folder', child: Text("Carpetas")),
+                            const PopupMenuItem<String>(
+                                value: 'Imagen', child: Text("Imagenes")),
+                            const PopupMenuItem<String>(
+                                value: 'Video', child: Text("Videos")),
+                            const PopupMenuItem<String>(
+                                value: 'Documento', child: Text("Documentos")),
+                          ]),
                   const SizedBox(width: 10),
-                  const Icon(Icons.sort_rounded,
-                      color: Color.fromRGBO(122, 133, 159, 1), size: 25)
+                  GestureDetector(
+                    onTap: () => descOrder.toggle(),
+                    child: const Icon(Icons.sort_rounded,
+                        color: Color.fromRGBO(122, 133, 159, 1), size: 25),
+                  )
                 ],
               ),
               const SizedBox(height: 15),
@@ -73,7 +96,7 @@ class FilesPage extends StatelessWidget {
                     }
                   }
                   localPath = path;
-                }),
+                }, filterOption.value, descOrder.value),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
@@ -134,7 +157,9 @@ class FilesPage extends StatelessWidget {
                                     const Color.fromARGB(255, 82, 114, 143));
                                 uploadForm = uploadContainer(
                                     title: "Subir archivo",
-                                    folderName: folderName.value,
+                                    folderName: folderName.value == 'Archivos'
+                                        ? ''
+                                        : folderName.value,
                                     fileData: fileData,
                                     onClose: () {
                                       setColor(const Color.fromRGBO(
@@ -171,27 +196,43 @@ class FilesPage extends StatelessWidget {
     );
   }
 
-  Future<List<Widget>> mapUserFolders(
-      Function(Map) onFileSelected, Function(String) onDownload) async {
+  Future<List<Widget>> mapUserFolders(Function(Map) onFileSelected,
+      Function(String) onDownload, String filter, bool order) async {
     List<Widget> listWidgets = [];
     if (folderName.value == 'Archivos') {
+      List<Directories> folders = user.directories;
+      folders.sort((a, b) => order
+          ? a.nameDirectory
+              .toLowerCase()
+              .compareTo(b.nameDirectory.toLowerCase())
+          : b.nameDirectory
+              .toLowerCase()
+              .compareTo(a.nameDirectory.toLowerCase()));
       for (var directory in user.directories) {
-        if (directory.nameDirectory.value != 'Default${user.user}') {
-          listWidgets
-              .addAll(await displayFolder(directory.nameDirectory.value));
+        if (directory.nameDirectory != 'Default${user.user}' &&
+            (filter == "" || filter == "Folder")) {
+          listWidgets.addAll(await displayFolder(directory.nameDirectory));
         }
       }
+
       listWidgets.addAll(await displayFolder('Default${user.user}',
-          showFiles: true, onTap: onFileSelected, onDownload: onDownload));
+          showFiles: true,
+          onTap: onFileSelected,
+          onDownload: onDownload,
+          filter: filter,
+          order: order));
     } else {
       var folder = user.directories
-          .firstWhere((dir) => dir.nameDirectory.value == folderName.value,
+          .firstWhere((dir) => dir.nameDirectory == folderName.value,
               orElse: () => Directories({"nameDirectory": ""}))
-          .nameDirectory
-          .value;
+          .nameDirectory;
       if (folder != "") {
         listWidgets.addAll(await displayFolder(folder,
-            showFiles: true, onTap: onFileSelected, onDownload: onDownload));
+            showFiles: true,
+            onTap: onFileSelected,
+            onDownload: onDownload,
+            filter: filter,
+            order: order));
       }
     }
     return listWidgets;
@@ -200,16 +241,25 @@ class FilesPage extends StatelessWidget {
   Future<List<Widget>> displayFolder(String directory,
       {bool showFiles = false,
       Function(String)? onDownload,
-      Function(Map)? onTap}) async {
+      Function(Map)? onTap,
+      String filter = "",
+      bool order = true}) async {
     String apiPath =
         'https://api-drivehub-production.up.railway.app/api/files/unidad';
-    Directories folder = user.directories
-        .firstWhere((dir) => dir.nameDirectory.value == directory);
+    Directories folder =
+        user.directories.firstWhere((dir) => dir.nameDirectory == directory);
 
     if (showFiles) {
       List<Widget> files = [];
+      List<Files> folderFiles = folder.files;
+      folderFiles.sort((a, b) => order
+          ? a.nameFile.toLowerCase().compareTo(b.nameFile.toLowerCase())
+          : b.nameFile.toLowerCase().compareTo(a.nameFile.toLowerCase()));
 
-      for (var file in folder.files) {
+      for (var file in folderFiles) {
+        if (filter != "" && (filter != typeKey(file.nameFile))) {
+          continue;
+        }
         final filePath =
             Uri.parse('$apiPath/${user.userName}/$directory/${file.nameFile}')
                 .toString();
@@ -343,7 +393,7 @@ class FilesPage extends StatelessWidget {
       return files;
     } else {
       // ignore: invalid_use_of_protected_member
-      double totalSize = folder.files.value
+      double totalSize = folder.files
           .fold(0, (previousValue, file) => previousValue + file.size);
       return [
         GestureDetector(

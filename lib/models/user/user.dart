@@ -8,7 +8,7 @@ class User extends GetxController {
   var avatar = "".obs;
   var premium = false.obs;
   var space = 0.0.obs;
-  var directories = <Directories>[].obs;
+  List<Directories> directories = [];
   var shouldShowImage = true.obs;
 
   dataUser({String? userEmail, String? userPassword, String? username}) {
@@ -25,7 +25,7 @@ class User extends GetxController {
     premium.value = json["premiun"] ?? false;
     space.value = json["space"] > 0 ? json["space"].toDouble() : 1.0;
 
-    directories.value = json["directories"]
+    directories = json["directories"]
         .map<Directories>((dirJson) => Directories(dirJson))
         .toList();
   }
@@ -51,13 +51,13 @@ class User extends GetxController {
 }
 
 class Directories extends GetxController {
-  var nameDirectory = "".obs;
-  var files = <Files>[].obs;
+  var nameDirectory = "";
+  List<Files> files = [];
 
   Directories(Map<String, dynamic> json) {
-    nameDirectory.value = json["nameDirectory"];
+    nameDirectory = json["nameDirectory"];
     if (json["files"] != null) {
-      files.value =
+      files =
           (json["files"] as List).map((fileJson) => Files(fileJson)).toList();
     }
   }

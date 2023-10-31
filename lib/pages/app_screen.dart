@@ -49,6 +49,7 @@ class AppContent extends StatelessWidget {
 
   var scaffoldBackground = Rx<Color>(const Color.fromRGBO(177, 224, 255, 1));
   var currentIndex = 2.obs;
+  var filterOption = RxString('');
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +60,12 @@ class AppContent extends StatelessWidget {
       CloudPage(),
       FilesPage((Color color) {
         scaffoldBackground.value = color;
-      }),
+      }, filterOption),
       HomePage((Color color) {
         scaffoldBackground.value = color;
+      }, (String filter) {
+        filterOption.value = filter;
+        currentIndex.value = 1;
       }),
       const SupportPage(),
       IconButton(
