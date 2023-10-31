@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User extends GetxController {
@@ -8,7 +9,7 @@ class User extends GetxController {
   var avatar = "".obs;
   var premium = false.obs;
   var space = 0.0.obs;
-  List<Directories> directories = [];
+  var directories = <Directories>[].obs;
   var shouldShowImage = true.obs;
 
   dataUser({String? userEmail, String? userPassword, String? username}) {
@@ -17,15 +18,18 @@ class User extends GetxController {
     password.value = userPassword ?? password.value;
   }
 
-  jsonFromUser(Map<String, dynamic> json) {
+  jsonFromUser(Map<String, dynamic> json) async {
+    final prefs = await SharedPreferences.getInstance();
+
     userName.value = json["userName"];
     email.value = json["email"];
     password.value = json["password"];
     avatar.value = json["avatar"];
-    premium.value = json["premiun"] ?? false;
+    premium.value = json["premium"] ?? false;
     space.value = json["space"] > 0 ? json["space"].toDouble() : 1.0;
+    shouldShowImage.value = prefs.getBool('shouldShowImage') ?? true;
 
-    directories = json["directories"]
+    directories.value = json["directories"]
         .map<Directories>((dirJson) => Directories(dirJson))
         .toList();
   }
@@ -35,6 +39,11 @@ class User extends GetxController {
     prefs.remove('userToken');
     email.value = '';
     password.value = '';
+    final cacheDir = await getTemporaryDirectory();
+
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
   }
 
   String get user => userName.value;

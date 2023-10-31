@@ -26,4 +26,24 @@ class ApiService {
       return {'Error': 'Error'};
     }
   }
+
+  Future<String> updateMembership(String user, String token) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$apiUrl/updatemembership/$user'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return 'Ok';
+      }
+
+      return 'Error';
+    } catch (e) {
+      return 'Error';
+    }
+  }
 }

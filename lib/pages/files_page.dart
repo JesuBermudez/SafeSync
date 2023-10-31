@@ -30,6 +30,7 @@ class FilesPage extends StatelessWidget {
   var selectedFile = {}.obs;
   var filterOption = "".obs;
   var descOrder = true.obs;
+  var searchValue = "".obs;
   String localPath = "";
 
   @override
@@ -81,12 +82,17 @@ class FilesPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 15),
-              SearchInput(controller: searchController),
+              SearchInput(
+                  controller: searchController,
+                  onChanged: (value) => searchValue.value = value),
               const SizedBox(height: 15),
               FutureBuilder<List<Widget>>(
                 future: mapUserFolders((file) {
                   selectedFile.value = file;
                   isShowingFileWidget.value = true;
+                  searchValue.value = "";
+                  searchController.clear();
+                  FocusScope.of(Get.context!).requestFocus(FocusNode());
                   setColor(const Color.fromARGB(255, 82, 114, 143));
                 }, (path) async {
                   if (localPath != path) {
@@ -96,7 +102,7 @@ class FilesPage extends StatelessWidget {
                     }
                   }
                   localPath = path;
-                }, filterOption.value, descOrder.value),
+                }, filterOption.value, descOrder.value, searchValue.value),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Widget>> snapshot) {
                   if (snapshot.hasData) {
@@ -196,11 +202,16 @@ class FilesPage extends StatelessWidget {
     );
   }
 
-  Future<List<Widget>> mapUserFolders(Function(Map) onFileSelected,
-      Function(String) onDownload, String filter, bool order) async {
+  Future<List<Widget>> mapUserFolders(
+      Function(Map) onFileSelected,
+      Function(String) onDownload,
+      String filter,
+      bool order,
+      String search) async {
     List<Widget> listWidgets = [];
     if (folderName.value == 'Archivos') {
-      List<Directories> folders = user.directories;
+      // ignore: invalid_use_of_protected_member
+      List<Directories> folders = user.directories.value;
       folders.sort((a, b) => order
           ? a.nameDirectory
               .toLowerCase()
@@ -210,7 +221,8 @@ class FilesPage extends StatelessWidget {
               .compareTo(a.nameDirectory.toLowerCase()));
       for (var directory in user.directories) {
         if (directory.nameDirectory != 'Default${user.user}' &&
-            (filter == "" || filter == "Folder")) {
+            (filter == "" || filter == "Folder") &&
+            directory.nameDirectory.contains(search.removeAllWhitespace)) {
           listWidgets.addAll(await displayFolder(directory.nameDirectory));
         }
       }
@@ -220,7 +232,8 @@ class FilesPage extends StatelessWidget {
           onTap: onFileSelected,
           onDownload: onDownload,
           filter: filter,
-          order: order));
+          order: order,
+          search: search.removeAllWhitespace));
     } else {
       var folder = user.directories
           .firstWhere((dir) => dir.nameDirectory == folderName.value,
@@ -232,7 +245,8 @@ class FilesPage extends StatelessWidget {
             onTap: onFileSelected,
             onDownload: onDownload,
             filter: filter,
-            order: order));
+            order: order,
+            search: search.removeAllWhitespace));
       }
     }
     return listWidgets;
@@ -243,7 +257,8 @@ class FilesPage extends StatelessWidget {
       Function(String)? onDownload,
       Function(Map)? onTap,
       String filter = "",
-      bool order = true}) async {
+      bool order = true,
+      String search = ""}) async {
     String apiPath =
         'https://api-drivehub-production.up.railway.app/api/files/unidad';
     Directories folder =
@@ -257,7 +272,8 @@ class FilesPage extends StatelessWidget {
           : b.nameFile.toLowerCase().compareTo(a.nameFile.toLowerCase()));
 
       for (var file in folderFiles) {
-        if (filter != "" && (filter != typeKey(file.nameFile))) {
+        if (filter != "" && filter != typeKey(file.nameFile) ||
+            !file.nameFile.contains(search)) {
           continue;
         }
         final filePath =

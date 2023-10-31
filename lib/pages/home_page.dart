@@ -11,7 +11,6 @@ import 'package:safesync/models/user/user.dart';
 import 'package:safesync/ui/cards/card_file_category.dart';
 import 'package:safesync/ui/cards/card_recent_files.dart';
 import 'package:safesync/ui/containers/pages_container.dart';
-import 'package:safesync/ui/inputs/search_input.dart';
 import 'package:safesync/ui/labels/title_label.dart';
 
 // ignore: must_be_immutable
@@ -21,7 +20,6 @@ class HomePage extends StatelessWidget {
   HomePage(this.setColor, this.setFilter, {super.key});
 
   User user = Get.find();
-  TextEditingController search = TextEditingController();
   var isShowingFileWidget = false.obs;
   var selectedFile = {}.obs;
   String localPath = "";
@@ -38,8 +36,7 @@ class HomePage extends StatelessWidget {
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SearchInput(controller: search),
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
                   child: Column(
@@ -104,7 +101,8 @@ class HomePage extends StatelessWidget {
                       ]),
                       const SizedBox(height: 15),
                       FutureBuilder<List<Widget>>(
-                        future: getRecentFilesWidgets(user, (path) async {
+                        future: getRecentFilesWidgets(
+                            user, user.shouldShowImage.value, (path) async {
                           if (localPath != path) {
                             final File file = File(localPath);
                             if (await file.exists()) {
@@ -177,7 +175,7 @@ Future<String> downloadFile(String url, String filename) async {
   return filePath;
 }
 
-Future<List<Widget>> getRecentFilesWidgets(User user,
+Future<List<Widget>> getRecentFilesWidgets(User user, bool shouldShowImage,
     Function(String) onDownload, Function(Map) onFileSelected) async {
   final recentFilesList = <Widget>[];
 
@@ -213,7 +211,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user,
     String imagePreview =
         Uri.parse("$apiPath/$previewImages/$fileNamePreview").toString();
 
-    if (user.shouldShowImage.value && (isImage || isVideo)) {
+    if (isImage || isVideo) {
       try {
         String localFilePath =
             await downloadFile(imagePreview, fileNamePreview);
@@ -222,6 +220,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user,
         } else {
           File imageFile = File(localFilePath);
           imagePreview = localFilePath;
+
           imageCard = Image.file(imageFile,
               width: 130,
               height: 84,
@@ -242,7 +241,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user,
     recentFilesList.add(
       recentFiles(
           iconCard: iconCard,
-          imageCard: imageCard,
+          imageCard: shouldShowImage ? imageCard : null,
           titleCard: titleCard,
           dateCard: dateFile,
           weightCard: weight,

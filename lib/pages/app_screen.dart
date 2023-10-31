@@ -4,6 +4,7 @@ import 'package:safesync/pages/cloud_page.dart';
 import 'package:safesync/pages/files_page.dart';
 import 'package:safesync/pages/home_page.dart';
 import 'package:safesync/pages/launch_page.dart';
+import 'package:safesync/pages/settings_page.dart';
 import 'package:safesync/pages/support_page.dart';
 import 'package:safesync/services/user/user.dart';
 import '../models/user/user.dart';
@@ -68,9 +69,7 @@ class AppContent extends StatelessWidget {
         currentIndex.value = 1;
       }),
       const SupportPage(),
-      IconButton(
-          icon: const Icon(Icons.logout_rounded),
-          onPressed: () => Get.offNamed("/login"))
+      SettingsPage()
     ];
 
     return Obx(() {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/models/user/user.dart';
+import 'package:safesync/services/user/user.dart';
 import 'package:safesync/ui/containers/pages_container.dart';
 import 'package:safesync/ui/labels/title_label.dart';
 import 'package:circular_chart_flutter/circular_chart_flutter.dart';
@@ -20,7 +21,42 @@ class CloudPage extends StatelessWidget {
               content: Column(
             children: [
               SizedBox(height: Get.height * 0.02),
-              titleLabel("Almacenamiento", fontSize: 25),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  user.premium.value
+                      ? const SizedBox(width: 15)
+                      : const SizedBox(),
+                  titleLabel("Almacenamiento", fontSize: 25),
+                  user.premium.value
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            width: 72,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                gradient: const LinearGradient(
+                                    colors: [Colors.orange, Colors.amber])),
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.workspace_premium_rounded,
+                                  color: Colors.white,
+                                  size: 13,
+                                ),
+                                Text('Premium',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12))
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox()
+                ],
+              ),
               Stack(alignment: Alignment.center, children: [
                 AnimatedCircularChart(
                   size: const Size(300, 300),
@@ -33,7 +69,9 @@ class CloudPage extends StatelessWidget {
                           rankKey: 'completed',
                         ),
                         CircularSegmentEntry(
-                          (5000000000 - user.space.value).toDouble(),
+                          ((user.premium.value ? 10000000000 : 5000000000) -
+                                  user.space.value)
+                              .toDouble(),
                           const Color.fromRGBO(225, 243, 253, 1),
                           rankKey: 'remaining',
                         ),
@@ -90,16 +128,16 @@ class CloudPage extends StatelessWidget {
               Row(mainAxisSize: MainAxisSize.min, children: [
                 RichText(
                     textAlign: TextAlign.center,
-                    text: const TextSpan(children: <TextSpan>[
-                      TextSpan(
+                    text: TextSpan(children: <TextSpan>[
+                      const TextSpan(
                           text: 'Total\n',
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
-                          text: '5 GB',
-                          style: TextStyle(
+                          text: user.premium.value ? '10 GB' : '5 GB',
+                          style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
@@ -118,14 +156,54 @@ class CloudPage extends StatelessWidget {
                               color: Color.fromRGBO(71, 96, 129, 1))),
                       TextSpan(
                           text: formatSize(
-                              (5000000000 - user.space.value).toDouble()),
+                              ((user.premium.value ? 10000000000 : 5000000000) -
+                                      user.space.value)
+                                  .toDouble()),
                           style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w600,
                               color: Color.fromRGBO(15, 58, 115, 1)))
                     ]))
               ]),
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
+              !user.premium.value
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: GestureDetector(
+                        onTap: () => updateMembership(),
+                        child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Colors.amber,
+                                    Colors.amberAccent,
+                                    Colors.orangeAccent,
+                                    Colors.yellow
+                                  ],
+                                  tileMode: TileMode.clamp,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Color.fromARGB(169, 255, 214, 64),
+                                      blurRadius: 5,
+                                      offset: Offset(-3, -3)),
+                                  BoxShadow(
+                                      color: Color.fromARGB(166, 255, 193, 7),
+                                      blurRadius: 5,
+                                      offset: Offset(3, 3))
+                                ]),
+                            child: const Text("Hazte premium",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500))),
+                      ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: 15),
               ...calculateSpaceAndFileCount().map((data) {
                 return Column(
                   children: [
@@ -205,7 +283,7 @@ class CloudPage extends StatelessWidget {
                         )
                       ]),
                     ),
-                    const SizedBox(height: 15)
+                    const SizedBox(height: 10)
                   ],
                 );
               })

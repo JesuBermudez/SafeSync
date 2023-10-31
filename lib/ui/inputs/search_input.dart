@@ -3,9 +3,10 @@ import 'package:safesync/icons/icons.dart';
 
 // ignore: must_be_immutable
 class SearchInput extends StatelessWidget {
-  SearchInput({super.key, required this.controller});
+  SearchInput({super.key, required this.controller, required this.onChanged});
 
   TextEditingController controller;
+  final Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,9 @@ class SearchInput extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
+        onChanged: (value) {
+          onChanged(value);
+        },
         decoration: InputDecoration(
             prefixIcon: const Icon(SafeSyncIcons.lupa, size: 26),
             border:
