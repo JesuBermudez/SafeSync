@@ -195,6 +195,15 @@ class FilesPage extends StatelessWidget {
                   onClose: () {
                     isShowingFileWidget.value = false;
                     setColor(const Color.fromRGBO(177, 224, 255, 1));
+                  },
+                  onDownload: (path) async {
+                    if (localPath != path) {
+                      final File file = File(localPath);
+                      if (await file.exists()) {
+                        await file.delete();
+                      }
+                    }
+                    localPath = path;
                   })
               : Container()
         ],
@@ -289,7 +298,7 @@ class FilesPage extends StatelessWidget {
         final iconCard =
             isImage ? iconImage : (isVideo ? iconVideo : iconDocument);
 
-        files.add(GestureDetector(
+        files.add(InkWell(
           onTap: () => onTap!({
             'file': file,
             'filePath': filePath,
@@ -412,7 +421,7 @@ class FilesPage extends StatelessWidget {
       double totalSize = folder.files
           .fold(0, (previousValue, file) => previousValue + file.size);
       return [
-        GestureDetector(
+        InkWell(
           onTap: () => folderName.value = directory,
           child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5),

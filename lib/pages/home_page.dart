@@ -143,6 +143,15 @@ class HomePage extends StatelessWidget {
                   onClose: () {
                     isShowingFileWidget.value = false;
                     setColor(const Color.fromRGBO(177, 224, 255, 1));
+                  },
+                  onDownload: (path) async {
+                    if (localPath != path) {
+                      final File file = File(localPath);
+                      if (await file.exists()) {
+                        await file.delete();
+                      }
+                    }
+                    localPath = path;
                   })
               : Container()
         ],

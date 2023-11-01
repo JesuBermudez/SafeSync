@@ -14,7 +14,7 @@ Widget recentFiles(
     required String filePath,
     required Function(String) onDownload,
     required Function() onTap}) {
-  return GestureDetector(
+  return InkWell(
     onTap: onTap,
     child: Container(
       width: 150,
@@ -86,33 +86,13 @@ Widget recentFiles(
                 onSelected: (String result) async {
                   switch (result) {
                     case 'Abrir con':
-                      showDialog(
-                          context: Get.context!,
-                          builder: (context) =>
-                              const Center(child: CircularProgressIndicator()));
-                      String currentPath =
-                          await downloadFile(filePath, titleCard, onDownload);
-                      Navigator.pop(Get.context!);
-                      if (currentPath != "") {
-                        openFile(currentPath);
-                      }
+                      openWith(filePath, titleCard, onDownload);
                       break;
                     case 'Compartir link':
-                      Map<String, dynamic> map =
-                          await shareFile(titleCard, folderName);
-                      String? path = map["link"];
-                      if (path != null) {
-                        Share.share(
-                            'SafeSync App\n\nTe comparto mi archivo: $titleCard\nlink: $path');
-                      }
+                      shareLink(titleCard, folderName);
                       break;
                     case 'Mostrar QR':
-                      Map<String, dynamic> map =
-                          await shareFile(titleCard, folderName);
-                      String? path = map["link"];
-                      if (path != null) {
-                        showQRDialog(titleCard, path);
-                      }
+                      shareQr(titleCard, folderName);
                       break;
                     case 'Borrar':
                       deleteFile([titleCard], folderName);
@@ -136,6 +116,35 @@ Widget recentFiles(
       ),
     ),
   );
+}
+
+void openWith(
+    String filePath, String fileName, Function(String) onDownload) async {
+  showDialog(
+      context: Get.context!,
+      builder: (context) => const Center(child: CircularProgressIndicator()));
+  String currentPath = await downloadFile(filePath, fileName, onDownload);
+  Navigator.pop(Get.context!);
+  if (currentPath != "") {
+    openFile(currentPath);
+  }
+}
+
+void shareLink(String fileName, String folderName) async {
+  Map<String, dynamic> map = await shareFile(fileName, folderName);
+  String? path = map["link"];
+  if (path != null) {
+    Share.share(
+        'SafeSync App\n\nTe comparto mi archivo: $fileName\nlink: $path');
+  }
+}
+
+void shareQr(String fileName, String folderName) async {
+  Map<String, dynamic> map = await shareFile(fileName, folderName);
+  String? path = map["link"];
+  if (path != null) {
+    showQRDialog(fileName, path);
+  }
 }
 
 Widget buildVariableText(String text1, String text2) {

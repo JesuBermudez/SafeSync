@@ -167,11 +167,12 @@ class CloudPage extends StatelessWidget {
               ]),
               const SizedBox(height: 15),
               !user.premium.value
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: GestureDetector(
+                  ? InkWell(
                         onTap: () => updateMembership(),
                         child: Container(
+                          width: Get.width >= 330
+                              ? 320
+                              : Get.width - (Get.width * 0.08),
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
@@ -199,8 +200,7 @@ class CloudPage extends StatelessWidget {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18,
-                                    fontWeight: FontWeight.w500))),
-                      ),
+                                  fontWeight: FontWeight.w500))),
                     )
                   : const SizedBox(),
               const SizedBox(height: 15),

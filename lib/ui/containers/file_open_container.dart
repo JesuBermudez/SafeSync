@@ -4,13 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/services/file/file.dart';
 import 'package:safesync/ui/appBars/upload_appbar.dart';
+import 'package:safesync/ui/cards/card_recent_files.dart';
 import 'package:video_player/video_player.dart';
 
 // ignore: must_be_immutable
 class FileOpen extends StatelessWidget {
   final Map file;
   final VoidCallback onClose;
-  FileOpen({super.key, required this.file, required this.onClose});
+  final Function(String) onDownload;
+  FileOpen(
+      {super.key,
+      required this.file,
+      required this.onClose,
+      required this.onDownload});
 
   ValueNotifier<double?> width = ValueNotifier<double?>(null);
   ValueNotifier<double?> height = ValueNotifier<double?>(null);
@@ -121,7 +127,7 @@ class FileOpen extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         duration: const Duration(milliseconds: 150),
         width: widthObs.value != 0.0 ? getWidth(widthObs.value) : 260,
-        height: isExpanded.value ? 150 : 54,
+        height: isExpanded.value ? 200 : 54,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
@@ -149,9 +155,59 @@ class FileOpen extends StatelessWidget {
                 ),
               ),
               if (isExpanded.value) ...[
-                const Text('Abrir con'),
-                const Text('Compartir'),
-                const Text('Eliminar'),
+                InkWell(
+                  onTap: () => openWith(
+                      file["filePath"], file['file'].nameFile, onDownload),
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Abrir con',
+                      style: TextStyle(
+                          fontSize: 18, color: Colors.blueGrey.shade900),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => shareLink(file['file'].nameFile, file['folder']),
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Compartir link',
+                      style: TextStyle(
+                          fontSize: 18, color: Colors.blueGrey.shade900),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => shareQr(file['file'].nameFile, file['folder']),
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Compartir Qr',
+                      style: TextStyle(
+                          fontSize: 18, color: Colors.blueGrey.shade900),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    deleteFile([file['file'].nameFile], file['folder']);
+                    onClose();
+                  },
+                  child: Container(
+                    height: 36,
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Eliminar',
+                      style: TextStyle(
+                          fontSize: 18, color: Colors.blueGrey.shade900),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2)
               ]
             ],
           ),

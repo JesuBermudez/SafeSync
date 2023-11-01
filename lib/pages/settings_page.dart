@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          GestureDetector(
+          InkWell(
             onTap: () => Get.offNamed('/login'),
             child: Container(
                 alignment: Alignment.center,
