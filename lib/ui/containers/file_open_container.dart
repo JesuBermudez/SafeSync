@@ -164,7 +164,7 @@ class FileOpen extends StatelessWidget {
                     child: Text(
                       'Abrir con',
                       style: TextStyle(
-                          fontSize: 18, color: Colors.blueGrey.shade900),
+                          fontSize: 16, color: Colors.blueGrey.shade900),
                     ),
                   ),
                 ),
@@ -176,7 +176,7 @@ class FileOpen extends StatelessWidget {
                     child: Text(
                       'Compartir link',
                       style: TextStyle(
-                          fontSize: 18, color: Colors.blueGrey.shade900),
+                          fontSize: 16, color: Colors.blueGrey.shade900),
                     ),
                   ),
                 ),
@@ -188,7 +188,7 @@ class FileOpen extends StatelessWidget {
                     child: Text(
                       'Compartir Qr',
                       style: TextStyle(
-                          fontSize: 18, color: Colors.blueGrey.shade900),
+                          fontSize: 16, color: Colors.blueGrey.shade900),
                     ),
                   ),
                 ),
@@ -203,7 +203,7 @@ class FileOpen extends StatelessWidget {
                     child: Text(
                       'Eliminar',
                       style: TextStyle(
-                          fontSize: 18, color: Colors.blueGrey.shade900),
+                          fontSize: 16, color: Colors.blueGrey.shade900),
                     ),
                   ),
                 ),

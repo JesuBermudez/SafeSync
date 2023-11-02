@@ -47,9 +47,9 @@ void register() async {
           content: Text('Fuiste registrado con exito'),
         ),
       );
-      Get.offNamed("login");
       user.clear();
       prefs.setBool('firstTime', false);
+      Get.offNamed("/login");
     } else {
       // ignore: use_build_context_synchronously
       showDialog(
@@ -63,6 +63,8 @@ void register() async {
   } catch (e) {
     // Hide loading indicator
     Navigator.pop(Get.context!);
+
+    print(e);
 
     // ignore: use_build_context_synchronously
     showDialog(
