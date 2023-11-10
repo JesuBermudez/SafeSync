@@ -208,8 +208,6 @@ void deleteFile(List<String> fileName, String folderName) async {
   } catch (e) {
     Navigator.pop(Get.context!);
 
-    print(e);
-
     showDialog(
       context: Get.context!,
       builder: (_) => const AlertDialog(

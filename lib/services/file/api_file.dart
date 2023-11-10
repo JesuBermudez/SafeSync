@@ -86,8 +86,6 @@ class ApiFile {
 
       Map<String, dynamic> data = json.decode(response.body);
 
-      print(data);
-
       if (data.containsKey("userFileDeletes")) {
         return data["userFileDeletes"];
       }
