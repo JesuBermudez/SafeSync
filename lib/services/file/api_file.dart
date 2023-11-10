@@ -86,8 +86,10 @@ class ApiFile {
 
       Map<String, dynamic> data = json.decode(response.body);
 
-      if (data.containsKey("user")) {
-        return data["user"];
+      print(data);
+
+      if (data.containsKey("userFileDeletes")) {
+        return data["userFileDeletes"];
       }
 
       return {'Error': 'Error al eliminar'};
