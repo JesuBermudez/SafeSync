@@ -231,7 +231,9 @@ class FilesPage extends StatelessWidget {
       for (var directory in user.directories) {
         if (directory.nameDirectory != 'Default${user.user}' &&
             (filter == "" || filter == "Folder") &&
-            directory.nameDirectory.contains(search.removeAllWhitespace)) {
+            directory.nameDirectory
+                .toLowerCase()
+                .contains(search.toLowerCase().removeAllWhitespace)) {
           listWidgets.addAll(await displayFolder(directory.nameDirectory));
         }
       }
@@ -242,7 +244,7 @@ class FilesPage extends StatelessWidget {
           onDownload: onDownload,
           filter: filter,
           order: order,
-          search: search.removeAllWhitespace));
+          search: search.toLowerCase().removeAllWhitespace));
     } else {
       var folder = user.directories
           .firstWhere((dir) => dir.nameDirectory == folderName.value,
@@ -255,7 +257,7 @@ class FilesPage extends StatelessWidget {
             onDownload: onDownload,
             filter: filter,
             order: order,
-            search: search.removeAllWhitespace));
+            search: search.toLowerCase().removeAllWhitespace));
       }
     }
     return listWidgets;
@@ -282,7 +284,7 @@ class FilesPage extends StatelessWidget {
 
       for (var file in folderFiles) {
         if (filter != "" && filter != typeKey(file.nameFile) ||
-            !file.nameFile.contains(search)) {
+            !file.nameFile.toLowerCase().contains(search)) {
           continue;
         }
         final filePath =
