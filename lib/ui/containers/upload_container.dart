@@ -64,12 +64,12 @@ Widget uploadContainer(
                           send: () {
                             title == "Subir archivo"
                                 ? uploadFile(
-                                    '${controller.text}$extension',
+                                    '${controller.text.trim()}$extension',
                                     folderName == ""
                                         ? "Default${user.user}"
                                         : folderName!,
                                     filePath)
-                                : directory(controller.text);
+                                : directory(controller.text.trim());
                             onClose();
                           }))
                 ])))

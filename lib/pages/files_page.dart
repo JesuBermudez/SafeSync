@@ -25,7 +25,7 @@ class FilesPage extends StatelessWidget {
   Widget uploadForm = const SizedBox();
   var seeOptions = false.obs;
   var upload = false.obs;
-  var folderName = Rx<String>("Archivos");
+  var folderName = Rx<String>("Archivos   ");
   var isShowingFileWidget = false.obs;
   var selectedFile = {}.obs;
   var filterOption = "".obs;
@@ -44,14 +44,14 @@ class FilesPage extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  if (folderName.value != "Archivos") ...[
+                  if (folderName.value != "Archivos   ") ...[
                     GestureDetector(
-                        onTap: () => folderName.value = "Archivos",
+                        onTap: () => folderName.value = "Archivos   ",
                         child: Icon(Icons.arrow_back_rounded,
                             color: Colors.blueGrey.shade900, size: 28)),
                     const SizedBox(width: 7)
                   ],
-                  titleLabel(folderName.value, fontSize: 24),
+                  titleLabel(folderName.value.trim(), fontSize: 24),
                   const Spacer(),
                   PopupMenuButton(
                       icon: const Icon(Icons.filter_alt_outlined,
@@ -163,9 +163,10 @@ class FilesPage extends StatelessWidget {
                                     const Color.fromARGB(255, 82, 114, 143));
                                 uploadForm = uploadContainer(
                                     title: "Subir archivo",
-                                    folderName: folderName.value == 'Archivos'
-                                        ? ''
-                                        : folderName.value,
+                                    folderName:
+                                        folderName.value == 'Archivos   '
+                                            ? ''
+                                            : folderName.value,
                                     fileData: fileData,
                                     onClose: () {
                                       setColor(const Color.fromRGBO(
@@ -218,7 +219,7 @@ class FilesPage extends StatelessWidget {
       bool order,
       String search) async {
     List<Widget> listWidgets = [];
-    if (folderName.value == 'Archivos') {
+    if (folderName.value == 'Archivos   ') {
       // ignore: invalid_use_of_protected_member
       List<Directories> folders = user.directories.value;
       folders.sort((a, b) => order
@@ -233,7 +234,7 @@ class FilesPage extends StatelessWidget {
             (filter == "" || filter == "Folder") &&
             directory.nameDirectory
                 .toLowerCase()
-                .contains(search.toLowerCase().removeAllWhitespace)) {
+                .contains(search.toLowerCase().trim())) {
           listWidgets.addAll(await displayFolder(directory.nameDirectory));
         }
       }
@@ -244,7 +245,7 @@ class FilesPage extends StatelessWidget {
           onDownload: onDownload,
           filter: filter,
           order: order,
-          search: search.toLowerCase().removeAllWhitespace));
+          search: search.toLowerCase().trim()));
     } else {
       var folder = user.directories
           .firstWhere((dir) => dir.nameDirectory == folderName.value,
@@ -257,7 +258,7 @@ class FilesPage extends StatelessWidget {
             onDownload: onDownload,
             filter: filter,
             order: order,
-            search: search.toLowerCase().removeAllWhitespace));
+            search: search.toLowerCase().trim()));
       }
     }
     return listWidgets;
