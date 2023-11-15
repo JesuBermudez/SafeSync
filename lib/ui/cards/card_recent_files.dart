@@ -187,6 +187,8 @@ Widget buildVariableText(String text1, String text2) {
 }
 
 void showQRDialog(String fileName, String qrCodeBase64) {
+  final size =
+      Get.width * 0.5 < Get.height * 0.8 ? Get.width * 0.5 : Get.height * 0.7;
   showDialog(
     context: Get.context!,
     builder: (BuildContext context) {
@@ -194,21 +196,17 @@ void showQRDialog(String fileName, String qrCodeBase64) {
         title: Text(fileName,
             style: const TextStyle(overflow: TextOverflow.ellipsis),
             maxLines: 1),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            QrImageView(
-              data: qrCodeBase64,
-              errorStateBuilder: (cxt, err) {
-                return const Center(
-                  child: Text(
-                    'Uh oh! ocurrio un error...',
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              },
-            ),
-          ],
+        content: QrImageView(
+          size: size,
+          data: qrCodeBase64,
+          errorStateBuilder: (cxt, err) {
+            return const Center(
+              child: Text(
+                'Uh oh! ocurrio un error...',
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
         ),
         actions: <Widget>[
           TextButton(
