@@ -196,17 +196,21 @@ void showQRDialog(String fileName, String qrCodeBase64) {
         title: Text(fileName,
             style: const TextStyle(overflow: TextOverflow.ellipsis),
             maxLines: 1),
-        content: QrImageView(
-          size: size,
-          data: qrCodeBase64,
-          errorStateBuilder: (cxt, err) {
-            return const Center(
-              child: Text(
-                'Uh oh! ocurrio un error...',
-                textAlign: TextAlign.center,
-              ),
-            );
-          },
+        content: SizedBox(
+          height: size,
+          width: size,
+          child: QrImageView(
+            size: size,
+            data: qrCodeBase64,
+            errorStateBuilder: (cxt, err) {
+              return const Center(
+                child: Text(
+                  'Uh oh! ocurrio un error...',
+                  textAlign: TextAlign.center,
+                ),
+              );
+            },
+          ),
         ),
         actions: <Widget>[
           TextButton(
