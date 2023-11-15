@@ -195,6 +195,7 @@ void showQRDialog(String fileName, String qrCodeBase64) {
             style: const TextStyle(overflow: TextOverflow.ellipsis),
             maxLines: 1),
         content: QrImageView(
+          size: Get.width * 0.5,
           data: qrCodeBase64,
           errorStateBuilder: (cxt, err) {
             return const Center(
