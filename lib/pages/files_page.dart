@@ -342,15 +342,15 @@ class FilesPage extends StatelessWidget {
                       Text(file.nameFile,
                           maxLines: 1,
                           style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 17,
                               fontWeight: FontWeight.w500,
                               overflow: TextOverflow.ellipsis,
                               color: Color.fromRGBO(65, 86, 110, 1))),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         formatFileSize(file.size),
                         style: const TextStyle(
-                            fontSize: 15,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: Color.fromRGBO(115, 133, 161, 1)),
                       )
@@ -448,15 +448,15 @@ class FilesPage extends StatelessWidget {
                       Text(directory,
                           maxLines: 1,
                           style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 17,
                               fontWeight: FontWeight.w500,
                               overflow: TextOverflow.ellipsis,
                               color: Color.fromRGBO(65, 86, 110, 1))),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         formatFileSize(totalSize),
                         style: const TextStyle(
-                            fontSize: 15,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: Color.fromRGBO(115, 133, 161, 1)),
                       )

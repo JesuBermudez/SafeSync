@@ -168,43 +168,43 @@ class CloudPage extends StatelessWidget {
               const SizedBox(height: 15),
               !user.premium.value
                   ? InkWell(
-                        onTap: () => updateMembership(),
-                        child: Container(
+                      onTap: () => updateMembership(),
+                      child: Container(
                           width: Get.width >= 330
                               ? 320
                               : Get.width - (Get.width * 0.08),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Colors.amber,
-                                    Colors.amberAccent,
-                                    Colors.orangeAccent,
-                                    Colors.yellow
-                                  ],
-                                  tileMode: TileMode.clamp,
-                                ),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Color.fromARGB(169, 255, 214, 64),
-                                      blurRadius: 5,
-                                      offset: Offset(-3, -3)),
-                                  BoxShadow(
-                                      color: Color.fromARGB(166, 255, 193, 7),
-                                      blurRadius: 5,
-                                      offset: Offset(3, 3))
-                                ]),
-                            child: const Text("Hazte premium",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Colors.amber,
+                                  Colors.amberAccent,
+                                  Colors.orangeAccent,
+                                  Colors.yellow
+                                ],
+                                tileMode: TileMode.clamp,
+                              ),
+                              boxShadow: const [
+                                BoxShadow(
+                                    color: Color.fromARGB(169, 255, 214, 64),
+                                    blurRadius: 5,
+                                    offset: Offset(-3, -3)),
+                                BoxShadow(
+                                    color: Color.fromARGB(166, 255, 193, 7),
+                                    blurRadius: 5,
+                                    offset: Offset(3, 3))
+                              ]),
+                          child: const Text("Hazte premium",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w500))),
                     )
                   : const SizedBox(),
               const SizedBox(height: 15),
-              ...calculateSpaceAndFileCount().map((data) {
+              ...calculateSpaceAndFileCount(user.directories).map((data) {
                 return Column(
                   children: [
                     Container(
@@ -311,7 +311,9 @@ class CloudPage extends StatelessWidget {
     }
   };
 
-  List<Map<String, String>> calculateSpaceAndFileCount() {
+  List<Map<String, String>> calculateSpaceAndFileCount(
+      List<Directories> directories) {
+    print(user.space.value);
     int imageCount = 0;
     double imageSize = 0;
     int videoCount = 0;
@@ -319,7 +321,7 @@ class CloudPage extends StatelessWidget {
     int docCount = 0;
     double docSize = 0;
 
-    for (var directory in user.directories) {
+    for (var directory in directories) {
       for (var file in directory.files) {
         if (_isImageFile(file.nameFile)) {
           imageCount++;

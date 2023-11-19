@@ -24,7 +24,7 @@ Widget fileCategory(Icon cardIcon, EdgeInsetsGeometry cardPadding,
       Text(cardText,
           style: const TextStyle(
               color: Color.fromRGBO(95, 125, 163, 1),
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: FontWeight.w600))
     ],
   );
