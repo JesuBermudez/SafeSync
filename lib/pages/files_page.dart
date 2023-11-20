@@ -17,7 +17,8 @@ import 'package:share_plus/share_plus.dart';
 // ignore: must_be_immutable
 class FilesPage extends StatelessWidget {
   final Function(Color) setColor;
-  FilesPage(this.setColor, this.filterOption, {super.key});
+  final Function(int, {String text, Icon? icon}) setUploading;
+  FilesPage(this.setColor, this.setUploading, this.filterOption, {super.key});
 
   User user = Get.find();
 
@@ -115,7 +116,8 @@ class FilesPage extends StatelessWidget {
                   }
                   return const CircularProgressIndicator();
                 },
-              )
+              ),
+              const SizedBox(height: 15)
             ],
           )),
           Align(
@@ -168,6 +170,7 @@ class FilesPage extends StatelessWidget {
                                             ? ''
                                             : folderName.value,
                                     fileData: fileData,
+                                    onUploading: setUploading,
                                     onClose: () {
                                       setColor(const Color.fromRGBO(
                                           177, 224, 255, 1));
@@ -197,6 +200,7 @@ class FilesPage extends StatelessWidget {
                     isShowingFileWidget.value = false;
                     setColor(const Color.fromRGBO(177, 224, 255, 1));
                   },
+                  setDownloading: setUploading,
                   onDownload: (path) async {
                     if (localPath != path) {
                       final File file = File(localPath);
@@ -368,13 +372,13 @@ class FilesPage extends StatelessWidget {
                     onSelected: (String result) async {
                       switch (result) {
                         case 'Abrir con':
-                          showDialog(
-                              context: Get.context!,
-                              builder: (context) => const Center(
-                                  child: CircularProgressIndicator()));
+                          setUploading(1,
+                              text: "Descargando",
+                              icon: const Icon(Icons.download_rounded,
+                                  color: Colors.blue, size: 20));
                           String currentPath = await downloadFile(
                               filePath, file.nameFile, onDownload!);
-                          Navigator.pop(Get.context!);
+                          setUploading(-1);
                           if (currentPath != "") {
                             openFile(currentPath);
                           }

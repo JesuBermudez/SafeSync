@@ -109,14 +109,15 @@ Future<Map<String, dynamic>> shareFile(
   }
 }
 
-void uploadFile(String fileName, String folderName, String filePath) async {
+void uploadFile(String fileName, String folderName, String filePath,
+    Function(int count, {String text, Icon? icon}) onUploading) async {
   final prefs = await SharedPreferences.getInstance();
   User user = Get.find();
 
-  // Show loading indicator
-  showDialog(
-      context: Get.context!,
-      builder: (context) => const Center(child: CircularProgressIndicator()));
+  onUploading(1,
+      text: "Subiendo",
+      icon:
+          const Icon(Icons.cloud_upload_rounded, color: Colors.blue, size: 20));
 
   final userToken = prefs.getString('userToken');
 
@@ -129,7 +130,7 @@ void uploadFile(String fileName, String folderName, String filePath) async {
         filePath: filePath,
         token: userToken);
 
-    Navigator.pop(Get.context!);
+    onUploading(-1);
 
     if (sucess.containsKey("_id")) {
       showDialog(

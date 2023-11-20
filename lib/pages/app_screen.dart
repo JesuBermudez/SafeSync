@@ -51,6 +51,10 @@ class AppContent extends StatelessWidget {
   var scaffoldBackground = Rx<Color>(const Color.fromRGBO(177, 224, 255, 1));
   var currentIndex = 2.obs;
   var filterOption = RxString('');
+  var uploadingFilesIcon =
+      const Icon(Icons.cloud_upload_rounded, color: Colors.blue, size: 20);
+  var uploadingFilesText = 'Subiendo';
+  var uploadingFilesCount = 0.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +65,25 @@ class AppContent extends StatelessWidget {
       CloudPage(),
       FilesPage((Color color) {
         scaffoldBackground.value = color;
+      }, (int count, {String? text, Icon? icon}) {
+        if (icon != null) {
+          uploadingFilesIcon = icon;
+        }
+        if (text != null) {
+          uploadingFilesText = text;
+        }
+        uploadingFilesCount.value = uploadingFilesCount.value + count;
       }, filterOption),
       HomePage((Color color) {
         scaffoldBackground.value = color;
+      }, (int count, {String? text, Icon? icon}) {
+        if (icon != null) {
+          uploadingFilesIcon = icon;
+        }
+        if (text != null) {
+          uploadingFilesText = text;
+        }
+        uploadingFilesCount.value = uploadingFilesCount.value + count;
       }, (String filter) {
         filterOption.value = filter;
         currentIndex.value = 1;
@@ -130,9 +150,41 @@ class AppContent extends StatelessWidget {
                       activeIcon: Icon(Icons.settings, color: activeColor))
                 ])),
         body: SafeArea(
-          child: IndexedStack(
-            index: currentIndex.value,
-            children: pages,
+          child: Stack(
+            children: [
+              IndexedStack(
+                index: currentIndex.value,
+                children: pages,
+              ),
+              uploadingFilesCount.value > 0
+                  ? Positioned(
+                      top: 5,
+                      right: 5,
+                      child: IntrinsicWidth(
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.black12,
+                                      offset: Offset(1, 1),
+                                      blurRadius: 3)
+                                ]),
+                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                uploadingFilesIcon,
+                                const SizedBox(width: 5),
+                                Text('$uploadingFilesText $uploadingFilesCount',
+                                    style: const TextStyle(fontSize: 14))
+                              ],
+                            )),
+                      ),
+                    )
+                  : const SizedBox()
+            ],
           ),
         ),
       );

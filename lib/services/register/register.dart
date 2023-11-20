@@ -64,8 +64,6 @@ void register() async {
     // Hide loading indicator
     Navigator.pop(Get.context!);
 
-    print(e);
-
     // ignore: use_build_context_synchronously
     showDialog(
       context: Get.context!,

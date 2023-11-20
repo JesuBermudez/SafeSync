@@ -12,10 +12,12 @@ class FileOpen extends StatelessWidget {
   final Map file;
   final VoidCallback onClose;
   final Function(String) onDownload;
+  final Function(int, {String text, Icon? icon}) setDownloading;
   FileOpen(
       {super.key,
       required this.file,
       required this.onClose,
+      required this.setDownloading,
       required this.onDownload});
 
   ValueNotifier<double?> width = ValueNotifier<double?>(null);
@@ -156,8 +158,8 @@ class FileOpen extends StatelessWidget {
               ),
               if (isExpanded.value) ...[
                 InkWell(
-                  onTap: () => openWith(
-                      file["filePath"], file['file'].nameFile, onDownload),
+                  onTap: () => openWith(file["filePath"], file['file'].nameFile,
+                      setDownloading, onDownload),
                   child: Container(
                     height: 36,
                     alignment: Alignment.center,

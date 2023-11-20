@@ -13,6 +13,7 @@ Widget recentFiles(
     required String folderName,
     required String filePath,
     required Function(String) onDownload,
+    required Function(int, {String text, Icon? icon}) setDownloading,
     required Function() onTap}) {
   return InkWell(
     onTap: onTap,
@@ -86,7 +87,7 @@ Widget recentFiles(
                 onSelected: (String result) async {
                   switch (result) {
                     case 'Abrir con':
-                      openWith(filePath, titleCard, onDownload);
+                      openWith(filePath, titleCard, setDownloading, onDownload);
                       break;
                     case 'Compartir link':
                       shareLink(titleCard, folderName);
@@ -119,14 +120,17 @@ Widget recentFiles(
 }
 
 void openWith(
-    String filePath, String fileName, Function(String) onDownload) async {
-  showDialog(
-      context: Get.context!,
-      builder: (context) => const Center(child: CircularProgressIndicator()));
+    String filePath,
+    String fileName,
+    Function(int, {String text, Icon? icon}) setDownloading,
+    Function(String) onDownload) async {
+  setDownloading(1,
+      text: "Descargando",
+      icon: const Icon(Icons.download_rounded, color: Colors.blue, size: 20));
   String currentPath = await downloadFile(filePath, fileName, onDownload);
-  Navigator.pop(Get.context!);
   if (currentPath != "") {
     openFile(currentPath);
+    setDownloading(-1);
   }
 }
 

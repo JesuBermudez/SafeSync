@@ -12,6 +12,7 @@ Widget uploadContainer(
     {required String title,
     String? folderName,
     Map? fileData,
+    Function(int count, {String text, Icon? icon})? onUploading,
     required VoidCallback onClose}) {
   User user = Get.find();
   TextEditingController controller = TextEditingController(
@@ -62,14 +63,18 @@ Widget uploadContainer(
                                   size: 26),
                           text: title.split(" ")[0],
                           send: () {
-                            title == "Subir archivo"
-                                ? uploadFile(
-                                    '${controller.text.trim()}$extension',
-                                    folderName == ""
-                                        ? "Default${user.user}"
-                                        : folderName!,
-                                    filePath)
-                                : directory(controller.text.trim());
+                            if (title == "Subir archivo") {
+                              uploadFile(
+                                  '${controller.text.trim()}$extension',
+                                  folderName == ""
+                                      ? "Default${user.user}"
+                                      : folderName!,
+                                  filePath,
+                                  onUploading!);
+                            } else {
+                              directory(controller.text.trim());
+                            }
+
                             onClose();
                           }))
                 ])))

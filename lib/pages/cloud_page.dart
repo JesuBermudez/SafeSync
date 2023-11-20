@@ -313,7 +313,6 @@ class CloudPage extends StatelessWidget {
 
   List<Map<String, String>> calculateSpaceAndFileCount(
       List<Directories> directories) {
-    print(user.space.value);
     int imageCount = 0;
     double imageSize = 0;
     int videoCount = 0;

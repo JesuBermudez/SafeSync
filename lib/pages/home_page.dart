@@ -17,7 +17,8 @@ import 'package:safesync/ui/labels/title_label.dart';
 class HomePage extends StatelessWidget {
   final Function(Color) setColor;
   final Function(String) setFilter;
-  HomePage(this.setColor, this.setFilter, {super.key});
+  final Function(int count, {String text, Icon? icon}) setDownloading;
+  HomePage(this.setColor, this.setDownloading, this.setFilter, {super.key});
 
   User user = Get.find();
   var isShowingFileWidget = false.obs;
@@ -102,19 +103,23 @@ class HomePage extends StatelessWidget {
                       const SizedBox(height: 15),
                       FutureBuilder<List<Widget>>(
                         future: getRecentFilesWidgets(
-                            user, user.shouldShowImage.value, (path) async {
-                          if (localPath != path) {
-                            final File file = File(localPath);
-                            if (await file.exists()) {
-                              await file.delete();
-                            }
-                          }
-                          localPath = path;
-                        }, (file) {
-                          selectedFile.value = file;
-                          isShowingFileWidget.value = true;
-                          setColor(const Color.fromARGB(255, 82, 114, 143));
-                        }),
+                            user,
+                            user.shouldShowImage.value,
+                            (path) async {
+                              if (localPath != path) {
+                                final File file = File(localPath);
+                                if (await file.exists()) {
+                                  await file.delete();
+                                }
+                              }
+                              localPath = path;
+                            },
+                            setDownloading,
+                            (file) {
+                              selectedFile.value = file;
+                              isShowingFileWidget.value = true;
+                              setColor(const Color.fromARGB(255, 82, 114, 143));
+                            }),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<Widget>> snapshot) {
                           if (snapshot.hasData) {
@@ -144,6 +149,7 @@ class HomePage extends StatelessWidget {
                     isShowingFileWidget.value = false;
                     setColor(const Color.fromRGBO(177, 224, 255, 1));
                   },
+                  setDownloading: setDownloading,
                   onDownload: (path) async {
                     if (localPath != path) {
                       final File file = File(localPath);
@@ -184,8 +190,12 @@ Future<String> downloadFile(String url, String filename) async {
   return filePath;
 }
 
-Future<List<Widget>> getRecentFilesWidgets(User user, bool shouldShowImage,
-    Function(String) onDownload, Function(Map) onFileSelected) async {
+Future<List<Widget>> getRecentFilesWidgets(
+    User user,
+    bool shouldShowImage,
+    Function(String) onDownload,
+    Function(int, {String text, Icon? icon}) setDownloading,
+    Function(Map) onFileSelected) async {
   final recentFilesList = <Widget>[];
 
   List<Map<String, dynamic>> allFiles = [];
@@ -257,6 +267,7 @@ Future<List<Widget>> getRecentFilesWidgets(User user, bool shouldShowImage,
           folderName: directoryName,
           filePath: filePath,
           onDownload: onDownload,
+          setDownloading: setDownloading,
           onTap: () => onFileSelected({
                 'file': file,
                 'filePath': filePath,
