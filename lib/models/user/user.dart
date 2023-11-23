@@ -51,7 +51,11 @@ class User extends GetxController {
   String get mail => email.value;
 
   Map<String, dynamic> toJson() {
-    return {'userName': user, 'email': mail, 'password': pass};
+    return {
+      'userName': user.split(' ').join(''),
+      'email': mail,
+      'password': pass
+    };
   }
 
   Map<String, dynamic> toJsonForLogin() {
