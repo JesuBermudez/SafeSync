@@ -25,7 +25,7 @@ class ApiService {
 
       return data.containsKey('error')
           ? {'Error': data['error']}
-          : {'Error': '$data'};
+          : {'Error': 'Error al iniciar sesión'};
     } catch (e) {
       return {'Error': '$e'};
     }
