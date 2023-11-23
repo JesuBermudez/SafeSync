@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/models/premium/premium.dart';
 import 'package:safesync/models/user/user.dart';
 import 'package:safesync/services/user/user.dart';
 import 'package:safesync/ui/containers/pages_container.dart';
@@ -11,6 +12,7 @@ class CloudPage extends StatelessWidget {
   CloudPage({super.key});
 
   User user = Get.find();
+  final PremiumController controller = Get.put(PremiumController());
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +170,7 @@ class CloudPage extends StatelessWidget {
               const SizedBox(height: 15),
               !user.premium.value
                   ? InkWell(
-                      onTap: () => updateMembership(),
+                      onTap: () => controller.showPremiumDialog(),
                       child: Container(
                           width: Get.width >= 330
                               ? 320
