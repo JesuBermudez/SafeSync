@@ -6,12 +6,16 @@ import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:safesync/models/file/file_page_controller.dart';
+import 'package:safesync/models/file_queue/file_queue_controller.dart';
+import 'package:safesync/models/file_queue/queued_file.dart';
 import 'package:safesync/models/user/user.dart';
 import 'package:safesync/services/file/api_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<String> downloadFile(
-    String url, String filename, Function(String) setPath) async {
+    String url, String filename) async {
+  FilePageController filePageController = Get.find();
   final directory = await getExternalStorageDirectory();
   if (directory == null) {
     return "";
@@ -34,7 +38,7 @@ Future<String> downloadFile(
     }
   }
 
-  setPath(filePath);
+  filePageController.onDownload(filePath);
 
   return filePath;
 }
@@ -109,15 +113,15 @@ Future<Map<String, dynamic>> shareFile(
   }
 }
 
-void uploadFile(String fileName, String folderName, String filePath,
-    Function(int count, {String text, Icon? icon}) onUploading) async {
+void uploadFile(String fileName, String folderName, String filePath) async {
   final prefs = await SharedPreferences.getInstance();
   User user = Get.find();
+  FileQueueController fileQueueController = Get.find();
+    QueuedFile file = QueuedFile(
+        const Icon(Icons.upload_rounded, color: Colors.blue, size: 20),
+        fileName);
 
-  onUploading(1,
-      text: "Subiendo",
-      icon:
-          const Icon(Icons.cloud_upload_rounded, color: Colors.blue, size: 20));
+    fileQueueController.addToQueue(file);
 
   final userToken = prefs.getString('userToken');
 
@@ -130,7 +134,7 @@ void uploadFile(String fileName, String folderName, String filePath,
         filePath: filePath,
         token: userToken);
 
-    onUploading(-1);
+    fileQueueController.removeFromQueue(file);
 
     if (sucess.containsKey("_id")) {
       showDialog(

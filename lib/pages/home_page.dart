@@ -1,29 +1,20 @@
-import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:safesync/ui/containers/file_open_container.dart';
-
+import 'package:safesync/models/file/file_functions_controller.dart';
 import 'package:safesync/icons/icons.dart';
+import 'package:safesync/models/file/file_page_controller.dart';
 import 'package:safesync/models/user/user.dart';
 import 'package:safesync/ui/cards/card_file_category.dart';
-import 'package:safesync/ui/cards/card_recent_files.dart';
-import 'package:safesync/ui/containers/pages_container.dart';
+import 'package:safesync/ui/containers/page_container.dart';
 import 'package:safesync/ui/labels/title_label.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
-  final Function(Color) setColor;
-  final Function(String) setFilter;
-  final Function(int count, {String text, Icon? icon}) setDownloading;
-  HomePage(this.setColor, this.setDownloading, this.setFilter, {super.key});
+  HomePage({super.key});
 
   User user = Get.find();
-  var isShowingFileWidget = false.obs;
-  var selectedFile = {}.obs;
-  String localPath = "";
+  FileController fileController = Get.find();
+  FilePageController filePageController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -58,14 +49,14 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 80),
                                   const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                   "Todo",
-                                  () => setFilter('')),
+                                  () => filePageController.setFilterOption('')),
                               const SizedBox(width: 12),
                               fileCategory(
                                   const Icon(Icons.folder,
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Carpetas",
-                                  () => setFilter('Folder'),
+                                  () => filePageController.setFilterOption('Folder'),
                                   Colors.red.shade500),
                               const SizedBox(width: 12),
                               fileCategory(
@@ -73,7 +64,7 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Imagenes",
-                                  () => setFilter('Imagen'),
+                                  () => filePageController.setFilterOption('Imagen'),
                                   const Color.fromARGB(255, 228, 75, 255)),
                               const SizedBox(width: 12),
                               fileCategory(
@@ -81,7 +72,7 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Videos",
-                                  () => setFilter('Video'),
+                                  () => filePageController.setFilterOption('Video'),
                                   Colors.cyan.shade300),
                               const SizedBox(width: 12),
                               fileCategory(
@@ -89,7 +80,7 @@ class HomePage extends StatelessWidget {
                                       color: Colors.white, size: 60),
                                   const EdgeInsets.fromLTRB(15, 13, 15, 12),
                                   "Archivos",
-                                  () => setFilter('Documento'),
+                                  () => filePageController.setFilterOption('Documento'),
                                   Colors.greenAccent[400]),
                             ],
                           )),
@@ -102,24 +93,7 @@ class HomePage extends StatelessWidget {
                       ]),
                       const SizedBox(height: 15),
                       FutureBuilder<List<Widget>>(
-                        future: getRecentFilesWidgets(
-                            user,
-                            user.shouldShowImage.value,
-                            (path) async {
-                              if (localPath != path) {
-                                final File file = File(localPath);
-                                if (await file.exists()) {
-                                  await file.delete();
-                                }
-                              }
-                              localPath = path;
-                            },
-                            setDownloading,
-                            (file) {
-                              selectedFile.value = file;
-                              isShowingFileWidget.value = true;
-                              setColor(const Color.fromARGB(255, 82, 114, 143));
-                            }),
+                        future: fileController.getRecentFilesWidgets(),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<Widget>> snapshot) {
                           if (snapshot.hasData) {
@@ -141,191 +115,10 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          isShowingFileWidget.value
-              ? FileOpen(
-                  // ignore: invalid_use_of_protected_member
-                  file: selectedFile.value,
-                  onClose: () {
-                    isShowingFileWidget.value = false;
-                    setColor(const Color.fromRGBO(177, 224, 255, 1));
-                  },
-                  setDownloading: setDownloading,
-                  onDownload: (path) async {
-                    if (localPath != path) {
-                      final File file = File(localPath);
-                      if (await file.exists()) {
-                        await file.delete();
-                      }
-                    }
-                    localPath = path;
-                  })
-              : Container()
+          // displays the file if one selected
+          fileController.getFileOpen()
         ],
       );
     });
-  }
-}
-
-const iconImage = Icon(Icons.image_rounded,
-    size: 89, color: Color.fromARGB(255, 228, 75, 255));
-final iconVideo =
-    Icon(Icons.play_arrow_rounded, size: 89, color: Colors.red.shade500);
-const iconDocument = Icon(Icons.description, size: 89, color: Colors.blue);
-
-Future<String> downloadFile(String url, String filename) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/$filename';
-  final file = File(filePath);
-
-  if (!file.existsSync()) {
-    // Si el archivo no existe, descargarlo
-    try {
-      final response = await http.get(Uri.parse(url));
-      await file.writeAsBytes(response.bodyBytes);
-    } catch (e) {
-      return "";
-    }
-  }
-
-  return filePath;
-}
-
-Future<List<Widget>> getRecentFilesWidgets(
-    User user,
-    bool shouldShowImage,
-    Function(String) onDownload,
-    Function(int, {String text, Icon? icon}) setDownloading,
-    Function(Map) onFileSelected) async {
-  final recentFilesList = <Widget>[];
-
-  List<Map<String, dynamic>> allFiles = [];
-  final previewImages = 'Default${user.userName}';
-
-  // Recorrer todas las carpetas y recopilar todos los archivos
-  for (final directory in user.directories) {
-    for (final file in directory.files) {
-      allFiles.add({
-        'file': file,
-        'directoryName': directory.nameDirectory,
-      });
-    }
-  }
-
-  allFiles.sort((a, b) => b['file'].date.compareTo(a['file'].date));
-
-  for (final item in allFiles) {
-    final file = item['file'];
-    final directoryName = item['directoryName'];
-    final fileNamePreview =
-        "${file.nameFile.split('.').sublist(0, file.nameFile.split('.').length - 1).join('.')}.png";
-
-    String apiPath =
-        'https://api-drivehub-production.up.railway.app/api/files/unidad';
-
-    final isImage = _isImageFile(file.nameFile);
-    final isVideo = _isVideoFile(file.nameFile);
-    final iconCard = isImage ? iconImage : (isVideo ? iconVideo : iconDocument);
-
-    Image? imageCard;
-    String imagePreview =
-        Uri.parse("$apiPath/$previewImages/$fileNamePreview").toString();
-
-    if (isImage || isVideo) {
-      try {
-        String localFilePath =
-            await downloadFile(imagePreview, fileNamePreview);
-        if (localFilePath == "") {
-          imageCard = null;
-        } else {
-          File imageFile = File(localFilePath);
-          imagePreview = localFilePath;
-
-          imageCard = Image.file(imageFile,
-              width: 130,
-              height: 84,
-              errorBuilder: (context, error, stackTrace) => iconCard);
-        }
-      } catch (e) {
-        imageCard = null;
-      }
-    }
-
-    final titleCard = file.nameFile;
-    final dateFile = getDateFile(file.date);
-    final weight = formatFileSize(file.size);
-    final filePath =
-        Uri.parse('$apiPath/${user.userName}/$directoryName/${file.nameFile}')
-            .toString();
-
-    recentFilesList.add(
-      recentFiles(
-          iconCard: iconCard,
-          imageCard: shouldShowImage ? imageCard : null,
-          titleCard: titleCard,
-          dateCard: dateFile,
-          weightCard: weight,
-          folderName: directoryName,
-          filePath: filePath,
-          onDownload: onDownload,
-          setDownloading: setDownloading,
-          onTap: () => onFileSelected({
-                'file': file,
-                'filePath': filePath,
-                "folder": directoryName,
-                "icon": iconCard,
-                "image": imagePreview,
-                "isImage": isImage,
-                "isVideo": isVideo
-              })),
-    );
-  }
-
-  return recentFilesList;
-}
-
-bool _isImageFile(String fileName) {
-  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', 'svg'];
-  final lowerCaseFileName = fileName.toLowerCase();
-  return imageExtensions.any((ext) => lowerCaseFileName.endsWith(ext));
-}
-
-bool _isVideoFile(String fileName) {
-  final videoExtensions = ['.mp4', '.avi', '.mkv', '.flv', '.wmv', 'webm'];
-  final lowerCaseFileName = fileName.toLowerCase();
-  return videoExtensions.any((ext) => lowerCaseFileName.endsWith(ext));
-}
-
-String getDateFile(String date) {
-  DateTime apiDate = DateTime.parse(date);
-  DateTime now = DateTime.now();
-  Duration difference = now.difference(apiDate);
-
-  if (difference.inDays == 0) {
-    return "Hoy";
-  } else if (difference.inDays == 1) {
-    return "Ayer";
-  } else if (difference.inDays < 30) {
-    return "Hace ${difference.inDays} días";
-  } else if (difference.inDays < 365) {
-    int months = difference.inDays ~/ 30;
-    return "Hace $months meses";
-  } else {
-    int years = difference.inDays ~/ 365;
-    return "Hace $years años";
-  }
-}
-
-String formatFileSize(double sizeInBytes) {
-  if (sizeInBytes < 1000) {
-    return '${sizeInBytes.toStringAsFixed(1)} bytes';
-  } else if (sizeInBytes < 1000 * 1000) {
-    double sizeInKb = sizeInBytes / 1000;
-    return '${sizeInKb.toStringAsFixed(1)} KB';
-  } else if (sizeInBytes < 1000 * 1000 * 1000) {
-    double sizeInMb = sizeInBytes / (1000 * 1000);
-    return '${sizeInMb.toStringAsFixed(1)} MB';
-  } else {
-    double sizeInGb = sizeInBytes / (1000 * 1000 * 1000);
-    return '${sizeInGb.toStringAsFixed(1)} GB';
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:safesync/models/premium/premium.dart';
+import 'package:safesync/models/user/directory.dart';
 import 'package:safesync/models/user/user.dart';
-import 'package:safesync/ui/containers/pages_container.dart';
+import 'package:safesync/ui/containers/page_container.dart';
 import 'package:safesync/ui/labels/title_label.dart';
 import 'package:circular_chart_flutter/circular_chart_flutter.dart';
 

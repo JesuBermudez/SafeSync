@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:safesync/models/user/directory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User extends GetxController {
@@ -11,6 +12,10 @@ class User extends GetxController {
   var space = 0.0.obs;
   var directories = <Directories>[].obs;
   var shouldShowImage = true.obs;
+
+  String get user => userName.value;
+  String get pass => password.value;
+  String get mail => email.value;
 
   dataUser({String? userEmail, String? userPassword, String? username}) {
     userName.value = username ?? userName.value;
@@ -36,19 +41,16 @@ class User extends GetxController {
 
   void clear() async {
     final prefs = await SharedPreferences.getInstance();
+    final cacheDir = await getTemporaryDirectory();
+
     prefs.remove('userToken');
     email.value = '';
     password.value = '';
-    final cacheDir = await getTemporaryDirectory();
 
     if (cacheDir.existsSync()) {
       cacheDir.deleteSync(recursive: true);
     }
   }
-
-  String get user => userName.value;
-  String get pass => password.value;
-  String get mail => email.value;
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,30 +62,5 @@ class User extends GetxController {
 
   Map<String, dynamic> toJsonForLogin() {
     return {'email': mail, 'password': pass};
-  }
-}
-
-class Directories extends GetxController {
-  var nameDirectory = "";
-  List<Files> files = [];
-
-  Directories(Map<String, dynamic> json) {
-    nameDirectory = json["nameDirectory"];
-    if (json["files"] != null) {
-      files =
-          (json["files"] as List).map((fileJson) => Files(fileJson)).toList();
-    }
-  }
-}
-
-class Files {
-  String nameFile = "";
-  String date = "";
-  double size = 0;
-
-  Files(Map<String, dynamic> json) {
-    nameFile = json["nameFile"];
-    date = json["Date"];
-    size = json["size"].toDouble();
   }
 }

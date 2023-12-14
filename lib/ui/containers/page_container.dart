@@ -17,8 +17,8 @@ class PagesContainer extends StatelessWidget {
         begin: Alignment(0.0, 0.0),
         end: Alignment(1, 0.70),
         colors: <Color>[
-          Color.fromRGBO(234, 245, 255, 1),
-          Color.fromRGBO(167, 220, 255, 1),
+          Color.fromRGBO(235, 245, 255, 1),
+          Color.fromRGBO(165, 220, 255, 1),
         ],
       )),
       child: SingleChildScrollView(

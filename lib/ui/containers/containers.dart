@@ -111,6 +111,7 @@ class ContainerInputs extends StatelessWidget {
           topRight: Radius.circular(30.0),
         ),
       ),
+
       child: Column(
         children: [
           Text(
@@ -128,31 +129,41 @@ class ContainerInputs extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+
           SizedBox(height: (Get.height - content) * 0.13),
+          // userName
           LabelInput(
             label: labelUsername,
             input: createUserName(show: view, controller: _usernameController),
           ),
+
           view
               ? SizedBox(height: (Get.height - content) * 0.05)
               : const SizedBox(),
+          // email
           LabelInput(
             label: 'Correo',
             input: createEmail(controller: _emailController),
           ),
+
           view
               ? SizedBox(height: (Get.height - content) * 0.05)
               : SizedBox(height: (Get.height - content) * 0.08),
+          // password
           LabelInput(
             label: 'Contraseña',
             input: createPasword(controller: _passwordController),
           ),
+
           SizedBox(height: (Get.height - content) * 0.08),
+          // redirect
           createRedirection(
             text: view ? "¿Ya tienes una cuenta?" : "¿No tienes una cuenta?",
             textLink: view ? "Inicia sesión" : "Registrate",
           ),
+
           SizedBox(height: (Get.height - content) * 0.08),
+          // submit button
           createButton(
               text: view ? 'Registrarse' : 'Entrar',
               registerd: () => view

@@ -22,7 +22,7 @@ Widget simpleButton(Icon icon, String title, VoidCallback onTap) {
       ]));
 }
 
-createButton(
+Widget createButton(
     {required String text, VoidCallback? registerd, VoidCallback? logind}) {
   return ElevatedButton(
     onPressed: text == 'Registrarse'
@@ -69,7 +69,7 @@ createButton(
   );
 }
 
-sendButton(
+Widget sendButton(
     {required Icon icon, required String text, required VoidCallback send}) {
   return ElevatedButton.icon(
     onPressed: send,

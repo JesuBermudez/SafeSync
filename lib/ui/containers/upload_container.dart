@@ -69,8 +69,7 @@ Widget uploadContainer(
                                   folderName == ""
                                       ? "Default${user.user}"
                                       : folderName!,
-                                  filePath,
-                                  onUploading!);
+                                  filePath);
                             } else {
                               directory(controller.text.trim());
                             }

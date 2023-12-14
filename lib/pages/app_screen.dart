@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:safesync/models/app/app_controller.dart';
+import 'package:safesync/models/file_queue/file_queue_controller.dart';
 import 'package:safesync/pages/cloud_page.dart';
 import 'package:safesync/pages/files_page.dart';
 import 'package:safesync/pages/home_page.dart';
@@ -27,17 +29,20 @@ class AppScreen extends StatelessWidget {
               });
             }
           }
+          // if it is your first time
           if (snapshot.data == "firstTime") {
             Future.delayed(const Duration(seconds: 1), () {
               Get.offNamed("/startpage");
             });
           }
+          // app content
           if (user.email.value.isNotEmpty ||
               snapshot.hasData &&
                   snapshot.data!.isNotEmpty &&
                   snapshot.data != "firstTime") {
             return AppContent();
           } else {
+            // loading view
             return const Scaffold(body: LaunchPage());
           }
         });
@@ -48,46 +53,15 @@ class AppScreen extends StatelessWidget {
 class AppContent extends StatelessWidget {
   AppContent({super.key});
 
-  var scaffoldBackground = Rx<Color>(const Color.fromRGBO(177, 224, 255, 1));
-  var currentIndex = 2.obs;
-  var filterOption = RxString('');
-  var uploadingFilesIcon =
-      const Icon(Icons.cloud_upload_rounded, color: Colors.blue, size: 20);
-  var uploadingFilesText = 'Subiendo';
-  var uploadingFilesCount = 0.obs;
+  AppController appController = Get.find();
+  FileQueueController fileQueueController = Get.find();
 
   @override
   Widget build(BuildContext context) {
-    const inactiveColor = Color.fromRGBO(148, 167, 190, 1);
-    const activeColor = Color.fromRGBO(2, 103, 212, 1);
-
     List<Widget> pages = [
       CloudPage(),
-      FilesPage((Color color) {
-        scaffoldBackground.value = color;
-      }, (int count, {String? text, Icon? icon}) {
-        if (icon != null) {
-          uploadingFilesIcon = icon;
-        }
-        if (text != null) {
-          uploadingFilesText = text;
-        }
-        uploadingFilesCount.value = uploadingFilesCount.value + count;
-      }, filterOption),
-      HomePage((Color color) {
-        scaffoldBackground.value = color;
-      }, (int count, {String? text, Icon? icon}) {
-        if (icon != null) {
-          uploadingFilesIcon = icon;
-        }
-        if (text != null) {
-          uploadingFilesText = text;
-        }
-        uploadingFilesCount.value = uploadingFilesCount.value + count;
-      }, (String filter) {
-        filterOption.value = filter;
-        currentIndex.value = 1;
-      }),
+      FilesPage(),
+      HomePage(),
       const SupportPage(),
       SettingsPage()
     ];
@@ -96,7 +70,8 @@ class AppContent extends StatelessWidget {
       return Scaffold(
         resizeToAvoidBottomInset: false,
         extendBodyBehindAppBar: true,
-        backgroundColor: scaffoldBackground.value,
+        backgroundColor: appController.scaffoldBackground.value,
+        // navigation bar
         bottomNavigationBar: Container(
             height: 60,
             clipBehavior: Clip.hardEdge,
@@ -114,76 +89,61 @@ class AppContent extends StatelessWidget {
                 topRight: Radius.circular(20),
               ),
             ),
+
+            // childs navigation bar
             child: BottomNavigationBar(
-                onTap: (value) => currentIndex.value = value,
-                currentIndex: currentIndex.value,
-                selectedItemColor: activeColor,
+                onTap: (value) => appController.setCurrentIndex(value),
+                currentIndex: appController.currentIndex.value,
+                selectedItemColor: appController.activeColor,
                 selectedFontSize: 15,
                 unselectedFontSize: 0,
                 showUnselectedLabels: false,
                 elevation: 0,
                 selectedLabelStyle: const TextStyle(height: 0.8),
-                items: const [
+                // sections
+                items: [
                   BottomNavigationBarItem(
                       label: '•',
-                      icon:
-                          Icon(Icons.wb_cloudy_outlined, color: inactiveColor),
-                      activeIcon: Icon(Icons.wb_cloudy, color: activeColor)),
+                      icon: Icon(Icons.wb_cloudy_outlined,
+                          color: appController.inactiveColor),
+                      activeIcon: Icon(Icons.wb_cloudy,
+                          color: appController.activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
-                      icon: Icon(Icons.folder_outlined, color: inactiveColor),
-                      activeIcon: Icon(Icons.folder, color: activeColor)),
+                      icon: Icon(Icons.folder_outlined,
+                          color: appController.inactiveColor),
+                      activeIcon:
+                          Icon(Icons.folder, color: appController.activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
                       icon: Icon(Icons.home_outlined,
-                          size: 28, color: inactiveColor),
+                          size: 28, color: appController.inactiveColor),
                       activeIcon: Icon(Icons.home_rounded,
-                          size: 28, color: activeColor)),
+                          size: 28, color: appController.activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
                       icon: Icon(Icons.insert_comment_outlined,
-                          color: inactiveColor),
-                      activeIcon: Icon(Icons.comment, color: activeColor)),
+                          color: appController.inactiveColor),
+                      activeIcon: Icon(Icons.comment,
+                          color: appController.activeColor)),
                   BottomNavigationBarItem(
                       label: '•',
-                      icon: Icon(Icons.settings_outlined, color: inactiveColor),
-                      activeIcon: Icon(Icons.settings, color: activeColor))
+                      icon: Icon(Icons.settings_outlined,
+                          color: appController.inactiveColor),
+                      activeIcon: Icon(Icons.settings,
+                          color: appController.activeColor))
                 ])),
+        // content
         body: SafeArea(
           child: Stack(
             children: [
+              // current section
               IndexedStack(
-                index: currentIndex.value,
+                index: appController.currentIndex.value,
                 children: pages,
               ),
-              uploadingFilesCount.value > 0
-                  ? Positioned(
-                      top: 5,
-                      right: 5,
-                      child: IntrinsicWidth(
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(4),
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Colors.black12,
-                                      offset: Offset(1, 1),
-                                      blurRadius: 3)
-                                ]),
-                            padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                uploadingFilesIcon,
-                                const SizedBox(width: 5),
-                                Text('$uploadingFilesText $uploadingFilesCount',
-                                    style: const TextStyle(fontSize: 14))
-                              ],
-                            )),
-                      ),
-                    )
-                  : const SizedBox()
+              // queue files
+              fileQueueController.queueCard(),
             ],
           ),
         ),
